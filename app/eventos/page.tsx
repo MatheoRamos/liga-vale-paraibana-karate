@@ -1,35 +1,31 @@
 import React from 'react';
-import { User, Calendar, MapPin, ChevronDown, ArrowRight, Phone, Mail } from 'lucide-react';
+import Link from 'next/link';
+import { User, Calendar, MapPin, ChevronDown, Phone, Mail } from 'lucide-react';
+import {
+  agruparEventosPorMes,
+  buscarEventos,
+  diaDoEvento,
+  type GrupoEventos,
+  separarEventos,
+} from '@/lib/eventos';
 
-export default function Eventos() {
-  
-  // === DADOS FALSOS PARA A TELA VISUAL ===
-  const proximosEventos = [
-    {
-      mes: "AGOSTO",
-      eventos: [
-        { id: 1, dia: "15", titulo: "30º Campeonato Regional de Karatê (Sul-Sudeste)", local: "Ginásio Municipal - São José dos Campos", tipo: "Competição" },
-        { id: 2, dia: "28", titulo: "Treinamento da Seleção Paulista", local: "Centro de Excelência", tipo: "Treinamento" }
-      ]
-    },
-    {
-      mes: "SETEMBRO",
-      eventos: [
-        { id: 3, dia: "10", titulo: "Exame de Faixas Coloridas (Até Marrom)", local: "Ikigai Dojo - Taubaté", tipo: "Exame" },
-        { id: 4, dia: "24", titulo: "Copa LVPK de Kata", local: "Clube ADC Embraer", tipo: "Competição" }
-      ]
-    }
-  ];
+export const dynamic = 'force-dynamic';
 
-  const eventosRealizados = [
-    {
-      mes: "JULHO",
-      eventos: [
-        { id: 5, dia: "02", titulo: "Curso de Padronização Técnica", local: "Dojo Matriz", tipo: "Curso" },
-        { id: 6, dia: "18", titulo: "Torneio Interno de Inverno", local: "Ginásio de Esportes", tipo: "Competição" }
-      ]
-    }
-  ];
+export default async function Eventos() {
+  let proximosEventos: GrupoEventos[] = [];
+  let eventosRealizados: GrupoEventos[] = [];
+  let erroAoCarregarEventos = false;
+
+  try {
+    const eventos = await buscarEventos();
+    const { proximos, realizados } = separarEventos(eventos);
+
+    proximosEventos = agruparEventosPorMes(proximos);
+    eventosRealizados = agruparEventosPorMes([...realizados].reverse());
+  } catch (error) {
+    console.error('Erro ao carregar eventos na pagina:', error);
+    erroAoCarregarEventos = true;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
@@ -38,7 +34,7 @@ export default function Eventos() {
       <nav className="bg-[#1e3a8a] text-white sticky top-0 z-50 shadow-lg border-b-4 border-[#ea580c]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
-            <a href="/" className="flex items-center gap-4 hover:opacity-90 transition-opacity">
+            <Link href="/" className="flex items-center gap-4 hover:opacity-90 transition-opacity">
               <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-md overflow-hidden p-0.5">
                  <img src="/logo.png" alt="Logo LVPK" className="w-full h-full object-contain rounded-full" />
               </div>
@@ -46,7 +42,7 @@ export default function Eventos() {
                 <span className="font-bold text-lg leading-tight uppercase tracking-wider text-white shadow-sm">Liga Vale Paraibana</span>
                 <span className="text-sm font-medium text-blue-200">de Karatê</span>
               </div>
-            </a>
+            </Link>
 
             <div className="hidden md:flex space-x-6 text-sm font-medium">
               <a href="#" className="hover:text-orange-400 transition-colors">INSTITUCIONAL</a>
@@ -95,8 +91,17 @@ export default function Eventos() {
             </h2>
 
             <div className="space-y-8">
-              {proximosEventos.map((grupoMes, index) => (
-                <div key={index} className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+              {erroAoCarregarEventos ? (
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 text-center text-slate-500">
+                  Não foi possível carregar os eventos no momento.
+                </div>
+              ) : proximosEventos.length === 0 ? (
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 text-center text-slate-500">
+                  Nenhum evento programado no momento.
+                </div>
+              ) : (
+                proximosEventos.map((grupoMes) => (
+                <div key={grupoMes.mes} className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                   <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-2">
                     <h3 className="font-extrabold text-xl text-[#1e3a8a] tracking-wider">{grupoMes.mes}</h3>
                     <ChevronDown size={20} className="text-slate-400" />
@@ -109,7 +114,7 @@ export default function Eventos() {
                         {/* Bloquinho de Data */}
                         <div className="flex flex-col items-center justify-center w-16 h-16 bg-[#1e3a8a] text-white rounded-lg shadow-sm flex-shrink-0">
                           <span className="text-xs font-medium uppercase opacity-80">{grupoMes.mes.substring(0,3)}</span>
-                          <span className="text-2xl font-black leading-none">{evento.dia}</span>
+                          <span className="text-2xl font-black leading-none">{diaDoEvento(evento.data_inicio)}</span>
                         </div>
 
                         {/* Informações do Evento */}
@@ -130,7 +135,8 @@ export default function Eventos() {
                     ))}
                   </div>
                 </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
 
@@ -141,8 +147,17 @@ export default function Eventos() {
             </h2>
 
             <div className="space-y-8 opacity-75">
-              {eventosRealizados.map((grupoMes, index) => (
-                <div key={index} className="bg-white rounded-xl border border-slate-200 p-6 grayscale-[30%]">
+              {erroAoCarregarEventos ? (
+                <div className="bg-white rounded-xl border border-slate-200 p-6 text-center text-slate-500">
+                  Não foi possível carregar os eventos realizados no momento.
+                </div>
+              ) : eventosRealizados.length === 0 ? (
+                <div className="bg-white rounded-xl border border-slate-200 p-6 text-center text-slate-500">
+                  Nenhum evento realizado encontrado.
+                </div>
+              ) : (
+                eventosRealizados.map((grupoMes) => (
+                <div key={grupoMes.mes} className="bg-white rounded-xl border border-slate-200 p-6 grayscale-[30%]">
                   <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-2">
                     <h3 className="font-extrabold text-xl text-slate-500 tracking-wider">{grupoMes.mes}</h3>
                   </div>
@@ -154,7 +169,7 @@ export default function Eventos() {
                         {/* Bloquinho de Data (Cinza) */}
                         <div className="flex flex-col items-center justify-center w-16 h-16 bg-slate-200 text-slate-500 rounded-lg flex-shrink-0">
                           <span className="text-xs font-medium uppercase opacity-80">{grupoMes.mes.substring(0,3)}</span>
-                          <span className="text-2xl font-black leading-none">{evento.dia}</span>
+                          <span className="text-2xl font-black leading-none">{diaDoEvento(evento.data_inicio)}</span>
                         </div>
 
                         {/* Informações do Evento */}
@@ -175,7 +190,8 @@ export default function Eventos() {
                     ))}
                   </div>
                 </div>
-              ))}
+                ))
+              )}
             </div>
             
             <button className="mt-8 flex items-center justify-center w-full py-3 bg-white border-2 border-slate-200 rounded-lg text-slate-600 font-bold hover:bg-slate-50 hover:text-[#1e3a8a] transition-all">
