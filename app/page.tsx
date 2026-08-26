@@ -1,63 +1,25 @@
-"use client"; // Precisamos adicionar isso porque agora a página vai fazer ações dinâmicas
+import React from 'react';
+import { User, Calendar, ArrowRight, Phone, Mail } from 'lucide-react';
+import {
+  buscarEventos,
+  formatarDataBrasileira,
+  separarEventos,
+  type EventoResumo,
+} from '@/lib/eventos';
 
-import React, { useState, useEffect } from 'react';
-import { User, Calendar, Newspaper, ArrowRight, Phone, Mail } from 'lucide-react';
+export const dynamic = 'force-dynamic';
 
-export default function App() {
-  
-  // 1. A Memória da nossa página (useState)
-  const [eventosDaApi, setEventosDaApi] = useState<any[]>([]);
-  
-  // 2. O Carregamento (Loading)
-  const [carregando, setCarregando] = useState(true);
+export default async function App() {
+  let proximosEventos: EventoResumo[] = [];
+  let erroAoCarregarEventos = false;
 
-  // 3. A ligação para o garçom (useEffect)
-  useEffect(() => {
-    // Como o ambiente de visualização aqui foca apenas na tela (Frontend) e não roda 
-    // a rota de API (/api/eventos) que criamos no backend, vamos simular o carregamento 
-    // com um atraso, entregando os mesmos dados que a sua API retornaria.
-    function buscarEventos() {
-      try {
-        setTimeout(() => {
-          const dadosDaNossaApi = [
-            {
-              id: 1,
-              titulo: '30º Campeonato Regional de Karatê (Sul-Sudeste)',
-              data_inicio: '15 de Agosto',
-              local: 'Ginásio Municipal - São José dos Campos',
-              tipo: 'Campeonato',
-              status: 'Inscrições Abertas'
-            },
-            {
-              id: 2,
-              titulo: 'Exame de Faixas Coloridas (Até Marrom)',
-              data_inicio: '10 de Setembro',
-              local: 'Ikigai Dojo - Taubaté',
-              tipo: 'Exame',
-              status: 'Agendado'
-            },
-            {
-              id: 3,
-              titulo: 'Curso de Arbitragem LVPK',
-              data_inicio: '05 de Outubro',
-              local: 'Online / Zoom',
-              tipo: 'Curso',
-              status: 'Agendado'
-            }
-          ];
-          
-          setEventosDaApi(dadosDaNossaApi); 
-          setCarregando(false);
-        }, 1500); // Aguarda 1.5 segundos para simular a internet
-      } catch (erro) {
-        console.error("Erro ao buscar eventos:", erro);
-        setCarregando(false);
-      }
-    }
-
-    // Executando a função
-    buscarEventos();
-  }, []); 
+  try {
+    const eventos = await buscarEventos();
+    proximosEventos = separarEventos(eventos).proximos.slice(0, 3);
+  } catch (error) {
+    console.error('Erro ao carregar eventos na home:', error);
+    erroAoCarregarEventos = true;
+  }
 
   // (As notícias continuam "falsas" por enquanto)
   const ultimasNoticias = [
@@ -188,14 +150,16 @@ export default function App() {
             </h2>
             
             <div className="space-y-4">
-              {/* Se a API ainda estiver carregando, mostramos um aviso */}
-              {carregando ? (
-                <div className="p-8 text-center text-slate-500 animate-pulse border border-slate-200 rounded-lg bg-slate-50">
-                  Buscando eventos no sistema...
+              {erroAoCarregarEventos ? (
+                <div className="p-8 text-center text-slate-500 border border-slate-200 rounded-lg bg-slate-50">
+                  Não foi possível carregar os eventos no momento.
+                </div>
+              ) : proximosEventos.length === 0 ? (
+                <div className="p-8 text-center text-slate-500 border border-slate-200 rounded-lg bg-slate-50">
+                  Nenhum evento programado no momento.
                 </div>
               ) : (
-                // Se já carregou, nós lemos a lista 'eventosDaApi' que veio do Backend
-                eventosDaApi.map((evento: any) => (
+                proximosEventos.map((evento) => (
                   <div key={evento.id} className="bg-white p-4 rounded-lg shadow-sm border-l-4 border-[#1e3a8a] flex flex-col hover:shadow-md transition-shadow cursor-pointer">
                     
                     <div className="flex justify-between items-start mb-2">
@@ -212,7 +176,7 @@ export default function App() {
                     <div className="flex flex-col gap-1 text-sm text-slate-600">
                       <div className="flex items-center gap-2">
                         <Calendar size={14} className="text-[#ea580c]"/> 
-                        <span>Data: {evento.data_inicio}</span>
+                        <span>Data: {formatarDataBrasileira(evento.data_inicio)}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="w-3.5 h-3.5 rounded-full bg-[#1e3a8a] flex items-center justify-center text-[8px] text-white font-bold">L</span>

@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  senha     String
+  role      String   @default("ATLETA")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  atleta Atleta?
+}
+
+model Atleta {
+  id           Int      @id @default(autoincrement())
+  usuarioId    Int      @unique
+  registroLvpk String   @unique
+  dojoId       Int?
+  faixaAtualId Int?
+  fotoUrl      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  usuario    Usuario @relation(fields: [usuarioId], references: [id])
+  dojo       Dojo?   @relation(fields: [dojoId], references: [id])
+  faixaAtual Faixa?  @relation("FaixaAtual", fields: [faixaAtualId], references: [id])
+
+  inscricoes      InscricaoEvento[]
+  historicoFaixas HistoricoFaixa[]
+  transacoes      TransacaoFinanceira[]
+}
+
+model Dojo {
+  id          Int      @id @default(autoincrement())
+  nome        String
+  responsavel String
+  endereco    String?
+  cidade      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  atletas Atleta[]
+}
+
+model Faixa {
+  id      Int    @id @default(autoincrement())
+  nome    String
+  grau    String?
+  ordem   Int
+  cor     String?
+
+  atletasAtuais   Atleta[]         @relation("FaixaAtual")
+  historicoFaixas HistoricoFaixa[]
+}
+
+model Evento {
+  id         Int      @id @default(autoincrement())
+  titulo     String
+  dataInicio DateTime
+  dataFim    DateTime?
+  local      String
+  tipo       String
+  status     String
+  descricao  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  categorias CategoriaEvento[]
+  inscricoes InscricaoEvento[]
+  transacoes TransacaoFinanceira[]
+}
+
+model CategoriaEvento {
+  id          Int     @id @default(autoincrement())
+  eventoId    Int
+  nome        String
+  modalidade  String?
+  sexo        String?
+  idadeMinima Int?
+  idadeMaxima Int?
+  pesoMinimo  Float?
+  pesoMaximo  Float?
+
+  evento     Evento            @relation(fields: [eventoId], references: [id], onDelete: Cascade)
+  inscricoes InscricaoEvento[]
+}
+
+model InscricaoEvento {
+  id          Int      @id @default(autoincrement())
+  atletaId    Int
+  eventoId    Int
+  categoriaId Int
+  status      String
+  data        DateTime @default(now())
+
+  atleta    Atleta         @relation(fields: [atletaId], references: [id])
+  evento    Evento         @relation(fields: [eventoId], references: [id])
+  categoria CategoriaEvento @relation(fields: [categoriaId], references: [id])
+
+  @@unique([atletaId, eventoId, categoriaId])
+}
+
+model HistoricoFaixa {
+  id         Int      @id @default(autoincrement())
+  atletaId   Int
+  faixaId    Int
+  dataExame  DateTime
+  examinador String?
+
+  atleta Atleta @relation(fields: [atletaId], references: [id])
+  faixa  Faixa  @relation(fields: [faixaId], references: [id])
+}
+
+model Noticia {
+  id              Int      @id @default(autoincrement())
+  titulo          String
+  resumo          String?
+  conteudo        String
+  categoria       String?
+  imagemCapaUrl   String?
+  dataPublicacao  DateTime @default(now())
+  visibilidade    String   @default("PUBLICO")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Recado {
+  id             Int      @id @default(autoincrement())
+  titulo         String
+  conteudo       String
+  categoria      String?
+  dataPublicacao DateTime @default(now())
+  visibilidade   String   @default("FILIADOS")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model TransacaoFinanceira {
+  id             Int       @id @default(autoincrement())
+  atletaId       Int
+  eventoId       Int?
+  tipo           String
+  valor          Decimal   @db.Decimal(10, 2)
+  status         String
+  dataVencimento DateTime
+  dataPagamento  DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  atleta Atleta  @relation(fields: [atletaId], references: [id])
+  evento Evento? @relation(fields: [eventoId], references: [id])
+}
