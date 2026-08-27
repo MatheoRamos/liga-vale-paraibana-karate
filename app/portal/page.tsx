@@ -39,16 +39,13 @@ export default function Portal() {
         </div>
 
         <nav className="flex-1 p-4 space-y-2">
-          <a href="#" className="flex items-center gap-3 bg-[#ea580c] text-white px-4 py-3 rounded-lg font-medium shadow-md transition-colors">
+          <a href="/portal" className="flex items-center gap-3 bg-[#ea580c] text-white px-4 py-3 rounded-lg font-medium shadow-md transition-colors">
             <User size={20} /> Meu Perfil
           </a>
-          <a href="#" className="flex items-center gap-3 text-blue-200 hover:bg-[#2e50ad] hover:text-white px-4 py-3 rounded-lg font-medium transition-colors">
-            <Award size={20} /> Histórico de Faixas
-          </a>
-          <a href="#" className="flex items-center gap-3 text-blue-200 hover:bg-[#2e50ad] hover:text-white px-4 py-3 rounded-lg font-medium transition-colors">
+          <a href="/portal/eventos" className="flex items-center gap-3 text-blue-200 hover:bg-[#2e50ad] hover:text-white px-4 py-3 rounded-lg font-medium transition-colors">
             <Calendar size={20} /> Meus Eventos
           </a>
-          <a href="#" className="flex items-center gap-3 text-blue-200 hover:bg-[#2e50ad] hover:text-white px-4 py-3 rounded-lg font-medium transition-colors">
+          <a href="/portal/financeiro" className="flex items-center gap-3 text-blue-200 hover:bg-[#2e50ad] hover:text-white px-4 py-3 rounded-lg font-medium transition-colors">
             <CreditCard size={20} /> Financeiro
           </a>
         </nav>
