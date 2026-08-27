@@ -1,12 +1,18 @@
 "use client"; // Esse comando diz ao Next.js que esta página tem interatividade (como botões que mudam o estado)
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, Lock, ArrowLeft, User as UserIcon } from 'lucide-react';
 
 export default function Login() {
   // useState é a "memória" do nosso componente. 
   // Ele guarda se o usuário quer ver a tela de 'login' ou de 'cadastro'
   const [modo, setModo] = useState('login'); 
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.search.includes('modo=cadastro')) {
+      setModo('cadastro');
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-[url('https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80')] bg-cover bg-center bg-no-repeat relative">

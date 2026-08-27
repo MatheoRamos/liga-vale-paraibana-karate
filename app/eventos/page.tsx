@@ -49,16 +49,16 @@ export default function Eventos() {
             </a>
 
             <div className="hidden md:flex space-x-6 text-sm font-medium">
-              <a href="#" className="hover:text-orange-400 transition-colors">INSTITUCIONAL</a>
-              <a href="#" className="hover:text-orange-400 transition-colors">KARATÊ</a>
-              <a href="#" className="hover:text-orange-400 transition-colors">GRADUAÇÃO</a>
+              <a href="/institucional" className="hover:text-orange-400 transition-colors">INSTITUCIONAL</a>
+              <a href="/karate" className="hover:text-orange-400 transition-colors">KARATÊ</a>
               <a href="/eventos" className="text-orange-400 font-bold border-b-2 border-orange-400 pb-1">EVENTOS</a>
-              <a href="#" className="hover:text-orange-400 transition-colors">NOTÍCIAS</a>
-              <a href="#" className="hover:text-orange-400 transition-colors">CONTATO</a>
+              <a href="/noticias" className="hover:text-orange-400 transition-colors">NOTÍCIAS</a>
+              <a href="/portal" className="hover:text-orange-400 transition-colors">PORTAL DO ATLETA</a>
+              <a href="/login" className="hover:text-orange-400 transition-colors">LOGIN</a>
             </div>
 
             <div className="flex items-center gap-4">
-              <a href="/login" className="bg-[#ea580c] hover:bg-[#c2410c] text-white px-5 py-2 rounded-md font-bold text-sm transition-colors shadow-md">
+              <a href="/login?modo=cadastro" className="bg-[#ea580c] hover:bg-[#c2410c] text-white px-5 py-2 rounded-md font-bold text-sm transition-colors shadow-md">
                 FILIE-SE
               </a>
               <a href="/login" className="p-2 text-blue-200 hover:text-white transition-colors" title="Área do Filiado">
