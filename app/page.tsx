@@ -93,15 +93,11 @@ export default function App() {
               <a href="/eventos" className="hover:text-orange-400 transition-colors">EVENTOS</a>
               <a href="/noticias" className="hover:text-orange-400 transition-colors">NOTÍCIAS</a>
               <a href="/portal" className="hover:text-orange-400 transition-colors">PORTAL DO ATLETA</a>
-              <a href="/login" className="hover:text-orange-400 transition-colors">LOGIN</a>
             </div>
 
             <div className="flex items-center gap-4">
-              <a href="/login?modo=cadastro" className="bg-[#ea580c] hover:bg-[#c2410c] text-white px-5 py-2 rounded-md font-bold text-sm transition-colors shadow-md">
+              <a href="/login" className="bg-[#ea580c] hover:bg-[#c2410c] text-white px-5 py-2 rounded-md font-bold text-sm transition-colors shadow-md">
                 FILIE-SE
-              </a>
-              <a href="/login" className="p-2 text-blue-200 hover:text-white transition-colors" title="Área do Filiado">
-                <User size={24} />
               </a>
             </div>
           </div>
@@ -172,9 +168,9 @@ export default function App() {
                 </div>
                 <p className="text-sm text-slate-600 mb-4">Junte sua academia à LVPK e participe do circuito oficial de competições da nossa região.</p>
               </div>
-              <button className="inline-flex items-center gap-2 text-sm font-bold text-[#ea580c] w-fit rounded-full group-hover:text-[#c2410c] transition-colors">
+              <a href="/login#vantagens" className="inline-flex items-center gap-2 text-sm font-bold text-[#ea580c] w-fit rounded-full group-hover:text-[#c2410c] transition-colors">
                 VER VANTAGENS <ArrowRight size={16} />
-              </button>
+              </a>
             </div>
           </div>
         </div>
