@@ -24,7 +24,6 @@ export default function Karate() {
               <a href="/karate" className="text-orange-400 font-bold border-b-2 border-orange-400 pb-1">KARATÊ</a>
               <a href="/eventos" className="hover:text-orange-400 transition-colors">EVENTOS</a>
               <a href="/noticias" className="hover:text-orange-400 transition-colors">NOTÍCIAS</a>
-              <a href="/portal" className="hover:text-orange-400 transition-colors">PORTAL DO ATLETA</a>
             </div>
 
             <div className="flex items-center gap-4">

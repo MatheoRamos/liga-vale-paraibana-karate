@@ -30,7 +30,7 @@ export default function Noticias() {
     },
     {
       id: 4,
-      titulo: 'Resultados oficiais do Exame de Faixas de Inverno já estão disponíveis no portal',
+      titulo: 'Resultados oficiais do Exame de Faixas de Inverno já estão disponíveis no site oficial',
       data: '10 de Junho, 2026',
       categoria: 'Graduação',
       imagem: 'https://images.unsplash.com/photo-1506784951209-68581ce818c3?auto=format&fit=crop&q=80'
@@ -59,7 +59,6 @@ export default function Noticias() {
               <a href="/karate" className="hover:text-orange-400 transition-colors">KARATÊ</a>
               <a href="/eventos" className="hover:text-orange-400 transition-colors">EVENTOS</a>
               <a href="/noticias" className="text-orange-400 font-bold border-b-2 border-orange-400 pb-1">NOTÍCIAS</a>
-              <a href="/portal" className="hover:text-orange-400 transition-colors">PORTAL DO ATLETA</a>
             </div>
 
             <div className="flex items-center gap-4">

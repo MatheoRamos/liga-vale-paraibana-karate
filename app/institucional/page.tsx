@@ -50,7 +50,6 @@ export default function Institucional() {
               <a href="/karate" className="hover:text-orange-400 transition-colors">KARATÊ</a>
               <a href="/eventos" className="hover:text-orange-400 transition-colors">EVENTOS</a>
               <a href="/noticias" className="hover:text-orange-400 transition-colors">NOTÍCIAS</a>
-              <a href="/portal" className="hover:text-orange-400 transition-colors">PORTAL DO ATLETA</a>
             </div>
 
             <div className="flex items-center gap-4">

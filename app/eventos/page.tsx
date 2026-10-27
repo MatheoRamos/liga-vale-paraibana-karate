@@ -53,7 +53,6 @@ export default function Eventos() {
               <a href="/karate" className="hover:text-orange-400 transition-colors">KARATÊ</a>
               <a href="/eventos" className="text-orange-400 font-bold border-b-2 border-orange-400 pb-1">EVENTOS</a>
               <a href="/noticias" className="hover:text-orange-400 transition-colors">NOTÍCIAS</a>
-              <a href="/portal" className="hover:text-orange-400 transition-colors">PORTAL DO ATLETA</a>
             </div>
 
             <div className="flex items-center gap-4">

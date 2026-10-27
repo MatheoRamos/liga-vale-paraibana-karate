@@ -28,7 +28,6 @@ export default function FiliacaoELoginPage() {
   const [abaDocumentos, setAbaDocumentos] = useState<'individual' | 'academia'>('individual');
 
   // Estado dos modais
-  const [modalLoginAberto, setModalLoginAberto] = useState(false);
   const [modalCadastroAberto, setModalCadastroAberto] = useState<'praticante' | 'academia' | null>(null);
 
   // Estados de cópia do PIX
@@ -64,9 +63,7 @@ export default function FiliacaoELoginPage() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      if (params.get('login') === 'true' || params.get('modo') === 'login') {
-        setModalLoginAberto(true);
-      } else if (params.get('modo') === 'cadastro') {
+      if (params.get('modo') === 'cadastro') {
         // Se vier com modo=cadastro, podemos abrir a ficha de praticante ou rolar para documentos
         const docElement = document.getElementById('documentos');
         if (docElement) {
@@ -124,7 +121,6 @@ export default function FiliacaoELoginPage() {
               <a href="/karate" className="hover:text-orange-400 transition-colors">KARATÊ</a>
               <a href="/eventos" className="hover:text-orange-400 transition-colors">EVENTOS</a>
               <a href="/noticias" className="hover:text-orange-400 transition-colors">NOTÍCIAS</a>
-              <a href="/portal" className="hover:text-orange-400 transition-colors">PORTAL DO ATLETA</a>
               <a href="#custas" className="hover:text-orange-400 transition-colors">CUSTAS</a>
               <a href="#contato" className="hover:text-orange-400 transition-colors">CONTATO</a>
             </div>
@@ -1017,122 +1013,11 @@ export default function FiliacaoELoginPage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-6 border-t border-slate-800 text-center text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p>© {new Date().getFullYear()} Liga Vale Paraibana de Karatê. Todos os direitos reservados.</p>
-          <div className="flex gap-4">
-            <button 
-              onClick={() => setModalLoginAberto(true)} 
-              className="text-blue-400 hover:text-white font-medium transition-colors"
-            >
-              Área Restrita do Filiado
-            </button>
-          </div>
         </div>
       </footer>
 
       {/* ======================================================== */}
-      {/* 10. MODAL: LOGIN / PORTAL DO FILIADO                    */}
-      {/* ======================================================== */}
-      {modalLoginAberto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-fadeIn">
-          <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
-            {/* Fechar Modal */}
-            <button
-              onClick={() => setModalLoginAberto(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full p-1.5 transition-colors z-10"
-              aria-label="Fechar"
-            >
-              <X size={20} />
-            </button>
-
-            {/* Cabeçalho do Modal */}
-            <div className="bg-[#1e3a8a] p-6 text-center text-white relative">
-              <div className="w-20 h-20 bg-white rounded-full mx-auto p-1 shadow-lg border-2 border-[#ea580c] mb-3">
-                <img src="/logo.png" alt="Logo LVPK" className="w-full h-full object-contain rounded-full" />
-              </div>
-              <h3 className="text-2xl font-black text-white">Portal do Filiado</h3>
-              <p className="text-xs text-blue-200 mt-1">
-                Acesse sua conta para ver graduações, certificados e inscrições
-              </p>
-            </div>
-
-            {/* Formulário de Login */}
-            <form 
-              onSubmit={(e) => {
-                e.preventDefault();
-                // Redireciona diretamente para o portal do atleta
-                window.location.href = '/portal';
-              }} 
-              className="p-6 space-y-4"
-            >
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                  E-mail ou Registro LVPK
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
-                  <input
-                    type="text"
-                    required
-                    placeholder="atleta@email.com ou LVPK-000"
-                    className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-[#ea580c] focus:border-transparent outline-none transition-all"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                  Senha de Acesso
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
-                  <input
-                    type="password"
-                    required
-                    placeholder="••••••••"
-                    className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-[#ea580c] focus:border-transparent outline-none transition-all"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between text-xs pt-1">
-                <label className="flex items-center text-slate-600 cursor-pointer">
-                  <input type="checkbox" className="rounded text-[#ea580c] focus:ring-[#ea580c] mr-2" defaultChecked />
-                  Lembrar de mim
-                </label>
-                <a href="#" className="font-semibold text-[#1e3a8a] hover:text-[#ea580c] transition-colors">
-                  Esqueceu a senha?
-                </a>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full mt-2 py-3 bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold rounded-lg text-sm uppercase tracking-wider shadow-md transition-colors active:scale-98"
-              >
-                ENTRAR NO PORTAL
-              </button>
-
-              <div className="text-center pt-3 border-t border-slate-100">
-                <p className="text-xs text-slate-500">
-                  Ainda não é filiado ou precisa de nova via?
-                </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setModalLoginAberto(false);
-                    const el = document.getElementById('documentos');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="mt-1 text-xs font-bold text-[#1e3a8a] hover:text-[#ea580c] underline transition-colors"
-                >
-                  Veja como se filiar à LVPK
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ======================================================== */}
-      {/* 11. MODAL: FICHA DE CADASTRO ONLINE (Praticante/Academia) */}
+      {/* 10. MODAL: FICHA DE CADASTRO ONLINE (Praticante/Academia) */}
       {/* ======================================================== */}
       {modalCadastroAberto && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-fadeIn overflow-y-auto">
