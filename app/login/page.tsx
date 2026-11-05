@@ -20,12 +20,18 @@ import {
   UploadCloud, 
   AlertCircle, 
   Building,
-  ShieldCheck
+  ShieldCheck,
+  ArrowUp,
+  Menu,
+  Sparkles,
+  ChevronRight
 } from 'lucide-react';
 
 export default function FiliacaoELoginPage() {
   // Aba ativa na seção de documentos: 'individual' | 'academia'
   const [abaDocumentos, setAbaDocumentos] = useState<'individual' | 'academia'>('individual');
+  const [menuMobileAberto, setMenuMobileAberto] = useState(false);
+  const [mostrarVoltarTopo, setMostrarVoltarTopo] = useState(false);
 
   // Estado dos modais
   const [modalCadastroAberto, setModalCadastroAberto] = useState<'praticante' | 'academia' | null>(null);
@@ -61,17 +67,31 @@ export default function FiliacaoELoginPage() {
 
   // Abre o modal de login automaticamente caso a URL venha com parâmetro
   useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 400) {
+        setMostrarVoltarTopo(true);
+      } else {
+        setMostrarVoltarTopo(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       if (params.get('modo') === 'cadastro') {
-        // Se vier com modo=cadastro, podemos abrir a ficha de praticante ou rolar para documentos
         const docElement = document.getElementById('documentos');
         if (docElement) {
           docElement.scrollIntoView({ behavior: 'smooth' });
         }
       }
     }
+
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const voltarAoTopo = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const copiarChavePix = () => {
     if (typeof navigator !== 'undefined') {
@@ -95,80 +115,143 @@ export default function FiliacaoELoginPage() {
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-[#ea580c] selection:text-white">
 
       {/* ======================================================== */}
-      {/* 1. NAVBAR (Cabeçalho idêntico ao padrão oficial da LVPK) */}
+      {/* 1. NAVBAR OFICIAL MODERNA                                */}
       {/* ======================================================== */}
-      <nav className="bg-[#1e3a8a] text-white sticky top-0 z-50 shadow-lg border-b-4 border-[#ea580c]">
+      <nav className="bg-[#1e3a8a]/95 backdrop-blur-md text-white sticky top-0 z-50 shadow-xl border-b-4 border-[#ea580c] transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
+            
             {/* Logo e Nome */}
-            <a href="/" className="flex items-center gap-3 md:gap-4 hover:opacity-90 transition-opacity">
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-full flex items-center justify-center shadow-md overflow-hidden p-0.5 shrink-0 border border-white">
+            <a href="/" className="flex items-center gap-3 md:gap-4 group hover:opacity-95 transition-opacity">
+              <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden p-0.5 border-2 border-white/80 group-hover:scale-105 transition-transform duration-300">
                 <img src="/logo.png" alt="Logo LVPK" className="w-full h-full object-contain rounded-full" />
               </div>
               <div className="flex flex-col">
-                <span className="font-extrabold text-base md:text-lg leading-tight uppercase tracking-wider text-white drop-shadow-sm">
+                <span className="font-black text-base md:text-lg leading-tight uppercase tracking-wider text-white drop-shadow-sm group-hover:text-orange-200 transition-colors">
                   Liga Vale Paraibana
                 </span>
-                <span className="text-xs md:text-sm font-medium text-blue-200">
-                  de Karatê
+                <span className="text-xs md:text-sm font-medium text-blue-200 tracking-wide">
+                  de Karatê Tradicional
                 </span>
               </div>
             </a>
 
-            {/* Links Centrais */}
-            <div className="hidden lg:flex space-x-6 text-sm font-medium items-center">
-              <a href="/institucional" className="hover:text-orange-400 transition-colors">INSTITUCIONAL</a>
-              <a href="/karate" className="hover:text-orange-400 transition-colors">KARATÊ</a>
-              <a href="/eventos" className="hover:text-orange-400 transition-colors">EVENTOS</a>
-              <a href="/noticias" className="hover:text-orange-400 transition-colors">NOTÍCIAS</a>
-              <a href="#custas" className="hover:text-orange-400 transition-colors">CUSTAS</a>
-              <a href="#contato" className="hover:text-orange-400 transition-colors">CONTATO</a>
+            {/* Menu Central Desktop */}
+            <div className="hidden lg:flex items-center space-x-7 text-xs md:text-sm font-bold tracking-wider">
+              <a href="/institucional" className="text-blue-100 hover:text-orange-400 transition-colors py-2 relative group">
+                INSTITUCIONAL
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-400 transition-all duration-300 group-hover:w-full"></span>
+              </a>
+              <a href="/karate" className="text-blue-100 hover:text-orange-400 transition-colors py-2 relative group">
+                KARATÊ
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-400 transition-all duration-300 group-hover:w-full"></span>
+              </a>
+              <a href="#custas" className="text-blue-100 hover:text-orange-400 transition-colors py-2 relative group">
+                CUSTAS
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-400 transition-all duration-300 group-hover:w-full"></span>
+              </a>
+              <a href="#contato" className="text-blue-100 hover:text-orange-400 transition-colors py-2 relative group">
+                CONTATO
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-400 transition-all duration-300 group-hover:w-full"></span>
+              </a>
             </div>
 
-            {/* Botões de Ação */}
+            {/* Botão Filie-se Desktop & Botão Hamburguer Mobile */}
             <div className="flex items-center gap-3">
               <a 
                 href="#documentos" 
-                className="bg-[#ea580c] hover:bg-[#c2410c] text-white px-4 md:px-5 py-2 md:py-2.5 rounded-md font-bold text-xs md:text-sm transition-all shadow-md active:scale-95 text-center uppercase tracking-wider"
+                className="btn-shine bg-gradient-to-r from-[#ea580c] to-[#c2410c] hover:from-[#c2410c] hover:to-[#9a3412] text-white px-5 md:px-6 py-2.5 rounded-full font-extrabold text-xs md:text-sm tracking-wider uppercase transition-all shadow-lg hover:shadow-orange-500/30 hover:scale-105 active:scale-95 text-center flex items-center gap-2"
               >
-                FILIE-SE
+                <span>FILIE-SE</span>
+                <ChevronRight size={16} />
               </a>
+
+              {/* Botão Mobile */}
+              <button
+                onClick={() => setMenuMobileAberto(!menuMobileAberto)}
+                className="lg:hidden p-2 text-white hover:text-orange-400 rounded-lg focus:outline-none transition-colors"
+                aria-label="Abrir menu"
+              >
+                {menuMobileAberto ? <X size={26} /> : <Menu size={26} />}
+              </button>
             </div>
           </div>
         </div>
+
+        {/* Menu Mobile Dropdown */}
+        {menuMobileAberto && (
+          <div className="lg:hidden bg-[#172554] border-t border-blue-900/60 px-4 pt-3 pb-6 space-y-2 animate-fade-in shadow-2xl">
+            <a 
+              href="/institucional" 
+              onClick={() => setMenuMobileAberto(false)}
+              className="block px-3 py-2.5 rounded-lg text-sm font-bold text-white hover:bg-white/10 hover:text-orange-400 transition-colors"
+            >
+              INSTITUCIONAL
+            </a>
+            <a 
+              href="/karate" 
+              onClick={() => setMenuMobileAberto(false)}
+              className="block px-3 py-2.5 rounded-lg text-sm font-bold text-white hover:bg-white/10 hover:text-orange-400 transition-colors"
+            >
+              KARATÊ
+            </a>
+            <a 
+              href="#custas" 
+              onClick={() => setMenuMobileAberto(false)}
+              className="block px-3 py-2.5 rounded-lg text-sm font-bold text-white hover:bg-white/10 hover:text-orange-400 transition-colors"
+            >
+              CUSTAS
+            </a>
+            <a 
+              href="#contato" 
+              onClick={() => setMenuMobileAberto(false)}
+              className="block px-3 py-2.5 rounded-lg text-sm font-bold text-white hover:bg-white/10 hover:text-orange-400 transition-colors"
+            >
+              CONTATO
+            </a>
+          </div>
+        )}
       </nav>
 
       {/* ======================================================== */}
       {/* 2. HERO SECTION COM MARCA D'ÁGUA E CARDS FLUTUANTES       */}
       {/* ======================================================== */}
-      <section className="relative bg-gradient-to-b from-[#0f172a] via-[#172554] to-[#1e3a8a] text-white pt-14 pb-36 md:pb-40 overflow-hidden border-b-8 border-[#ea580c]">
-        {/* Marca d'água com imagem suave de karatê ao fundo */}
+      <section className="relative bg-gradient-to-br from-[#0a1128] via-[#101f42] to-[#1e3a8a] text-white pt-16 pb-36 md:pb-40 overflow-hidden border-b-8 border-[#ea580c]">
+        {/* Glow Orbs */}
+        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-orange-600/20 rounded-full blur-3xl pointer-events-none animate-pulse-glow"></div>
+        <div className="absolute -bottom-10 right-1/4 w-[32rem] h-[32rem] bg-sky-500/15 rounded-full blur-3xl pointer-events-none animate-pulse-glow" style={{ animationDelay: '2.5s' }}></div>
+
+        {/* Marca d'água com imagem suave de karatê animada com Ken Burns */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute inset-0 bg-radial from-transparent via-[#0f172a]/60 to-[#0f172a] z-10"></div>
+          <div className="absolute inset-0 bg-radial from-transparent via-[#0a1128]/70 to-[#0a1128] z-10"></div>
           <img 
             src="https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80" 
             alt="Karatê Wallpaper" 
-            className="w-full h-full object-cover opacity-15 grayscale mix-blend-screen scale-105"
+            className="w-full h-full object-cover opacity-20 grayscale mix-blend-screen scale-105 animate-kenburns"
           />
         </div>
 
         <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
-          {/* Badge de cabeçalho */}
-          <div className="inline-flex items-center gap-2 bg-white/95 text-[#1e3a8a] px-4 py-1.5 rounded-full text-xs md:text-sm font-extrabold tracking-wide uppercase shadow-md mb-6 border border-white">
-            <Award className="text-amber-500" size={16} />
-            <span>FILIE-SE CONOSCO</span>
+          {/* Badge de cabeçalho com Ping */}
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full glass-dark text-orange-400 text-xs sm:text-sm font-bold uppercase tracking-wider mb-6 border border-orange-500/30 shadow-lg animate-float-slow">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500"></span>
+            </span>
+            <Sparkles size={16} className="text-orange-400" />
+            <span>FILIE-SE À LIGA VALE PARAIBANA</span>
           </div>
 
           {/* Título Principal */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-white mb-6 drop-shadow-md">
-            Filiação <span className="text-[#38bdf8]">LVPK</span>
+            Filiação <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500">LVPK</span>
           </h1>
 
           {/* Subtítulo */}
           <p className="max-w-3xl text-base sm:text-lg md:text-xl text-blue-100 font-light leading-relaxed">
             A filiação à LVPK permite que praticantes e academias façam parte oficialmente da 
             <strong className="font-semibold text-white"> Liga Vale Paraibana de Karatê</strong>, 
-            tendo acesso às atividades, exames de graduação, eventos e competições organizadas pela entidade.
+            tendo acesso a certificados homologados, cursos técnicos, graduações reconhecidas e suporte federativo.
           </p>
         </div>
       </section>
@@ -179,47 +262,47 @@ export default function FiliacaoELoginPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 md:-mt-28 relative z-30 mb-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          {/* Card 1: Agenda de Eventos */}
+          {/* Card 1: Tabela de Custas */}
           <div className="relative bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600 text-white rounded-2xl shadow-xl overflow-hidden p-6 md:p-8 flex flex-col justify-between min-h-[220px] transition-transform duration-300 hover:-translate-y-1">
             <div className="absolute right-[-20px] bottom-[-20px] opacity-15 pointer-events-none text-white">
-              <Calendar size={160} />
+              <DollarSign size={160} />
             </div>
             <div className="relative z-10">
               <h3 className="text-2xl md:text-3xl font-extrabold text-white mb-4 drop-shadow-sm">
-                Agenda de Eventos
+                Tabela de Custas
               </h3>
             </div>
             <div className="relative z-10 pt-4">
               <a 
-                href="/eventos" 
+                href="#custas" 
                 className="inline-flex items-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white text-xs md:text-sm font-bold uppercase tracking-wider px-5 py-2.5 rounded-full shadow-md transition-colors"
               >
-                VEJA MAIS <ArrowRight size={16} />
+                CONSULTAR <ArrowRight size={16} />
               </a>
             </div>
           </div>
 
-          {/* Card 2: Novidades e Notícias */}
+          {/* Card 2: Estilos & Tradição */}
           <div className="relative bg-slate-900 text-white rounded-2xl shadow-xl overflow-hidden p-6 md:p-8 flex flex-col justify-between min-h-[220px] transition-transform duration-300 hover:-translate-y-1">
             <div className="absolute inset-0">
               <img 
-                src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&q=80" 
-                alt="Notícias de Karatê" 
+                src="https://images.unsplash.com/photo-1542652735873-fb2825bac6e2?auto=format&fit=crop&q=80" 
+                alt="Estilos de Karatê" 
                 className="w-full h-full object-cover opacity-35"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/60 to-transparent"></div>
             </div>
             <div className="relative z-10">
               <h3 className="text-2xl md:text-3xl font-extrabold text-white mb-4 drop-shadow-sm">
-                Novidades e Notícias
+                Estilos & Tradição
               </h3>
             </div>
             <div className="relative z-10 pt-4">
               <a 
-                href="/noticias" 
+                href="/karate" 
                 className="inline-flex items-center gap-2 bg-[#dc2626] hover:bg-[#b91c1c] text-white text-xs md:text-sm font-bold uppercase tracking-wider px-5 py-2.5 rounded-full shadow-md transition-colors"
               >
-                VEJA MAIS <ArrowRight size={16} />
+                CONHEÇA <ArrowRight size={16} />
               </a>
             </div>
           </div>
@@ -948,11 +1031,15 @@ export default function FiliacaoELoginPage() {
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <Phone className="text-[#ea580c] shrink-0" size={22} />
-                <span className="font-bold text-base text-white">(11) 98292 4664</span>
+                <a href="tel:12997114365" className="font-bold text-base text-white hover:text-orange-400 transition-colors">
+                  (12) 99711-4365
+                </a>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="text-blue-400 shrink-0" size={22} />
-                <span className="text-sm font-medium text-slate-300 break-all">contato@lvpk.com.br</span>
+                <a href="mailto:ligavaleparaibanadekarate@gmail.com" className="text-sm font-medium text-slate-300 hover:text-white transition-colors break-all">
+                  ligavaleparaibanadekarate@gmail.com
+                </a>
               </div>
             </div>
           </div>
@@ -971,16 +1058,7 @@ export default function FiliacaoELoginPage() {
             <h4 className="text-white font-bold mb-4 uppercase text-xs tracking-wider">Redes Sociais</h4>
             <div className="flex gap-3 mb-6">
               <a 
-                href="https://facebook.com" 
-                target="_blank" 
-                rel="noreferrer" 
-                className="w-9 h-9 rounded-full bg-white text-[#0f172a] flex items-center justify-center hover:bg-[#ea580c] hover:text-white transition-colors"
-                aria-label="Facebook"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-              </a>
-              <a 
-                href="https://instagram.com" 
+                href="https://www.instagram.com/lvpk2026/" 
                 target="_blank" 
                 rel="noreferrer" 
                 className="w-9 h-9 rounded-full bg-white text-[#0f172a] flex items-center justify-center hover:bg-[#ea580c] hover:text-white transition-colors"
@@ -1223,7 +1301,7 @@ export default function FiliacaoELoginPage() {
                           required
                           value={formPraticante.sensei}
                           onChange={(e) => setFormPraticante({ ...formPraticante, sensei: e.target.value })}
-                          placeholder="Ex: Sensei Carlos Eduardo"
+                          placeholder="Ex: Nome do Sensei Responsável"
                           className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 focus:ring-2 focus:ring-[#ea580c] outline-none"
                         />
                       </div>
@@ -1401,6 +1479,18 @@ export default function FiliacaoELoginPage() {
             )}
           </div>
         </div>
+      )}
+
+      {/* Botão flutuante de voltar ao topo */}
+      {mostrarVoltarTopo && (
+        <button
+          onClick={voltarAoTopo}
+          className="fixed bottom-6 right-6 z-40 bg-[#ea580c] hover:bg-[#c2410c] text-white p-3 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all border-2 border-white/40 animate-fade-in"
+          title="Voltar ao topo"
+          aria-label="Voltar ao topo"
+        >
+          <ArrowUp size={20} />
+        </button>
       )}
 
     </div>
