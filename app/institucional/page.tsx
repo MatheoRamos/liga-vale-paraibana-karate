@@ -91,7 +91,7 @@ export default function Institucional() {
                   Liga Vale Paraibana
                 </span>
                 <span className="text-[11px] sm:text-xs md:text-sm font-medium text-blue-200 tracking-wide">
-                  de Karatê Tradicional
+                  de Karatê Esportivo
                 </span>
               </div>
             </a>

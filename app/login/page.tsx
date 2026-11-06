@@ -30,6 +30,49 @@ import {
 } from 'lucide-react';
 import { gerarFichaPdf, formatarData, nomeArquivoFicha, CONTATO_LIGA } from './gerarFichaPdf';
 
+// Estilos aceitos pela LVPK e a ordem de graduação de cada um (mesma da página Karatê)
+const ESTILOS_KARATE = ['Shotokan', 'Shorin-ryu', 'Goju-ryu'] as const;
+type EstiloKarate = (typeof ESTILOS_KARATE)[number];
+
+const FAIXAS_PRETAS = ['Faixa Preta 1º Dan', 'Faixa Preta 2º Dan ou superior'];
+
+const GRADUACOES_POR_ESTILO: Record<EstiloKarate, string[]> = {
+  Shotokan: [
+    'Faixa Branca (10º Kyu)',
+    'Faixa Amarela (9º Kyu)',
+    'Faixa Laranja (8º Kyu)',
+    'Faixa Verde (7º Kyu)',
+    'Faixa Azul Claro (6º Kyu)',
+    'Faixa Roxa (5º Kyu)',
+    'Faixa Azul Escuro (4º Kyu)',
+    'Faixa Marrom (3º Kyu)',
+    'Faixa Marrom (2º Kyu)',
+    'Faixa Marrom (1º Kyu)',
+    ...FAIXAS_PRETAS,
+  ],
+  'Shorin-ryu': [
+    'Faixa Branca (7º Kyu)',
+    'Faixa Azul Clara (6º Kyu)',
+    'Faixa Amarela (5º Kyu)',
+    'Faixa Laranja (4º Kyu)',
+    'Faixa Verde Estágio (3º Kyu)',
+    'Faixa Verde (3º Kyu)',
+    'Faixa Roxa (2º Kyu)',
+    'Faixa Marrom (1º Kyu)',
+    ...FAIXAS_PRETAS,
+  ],
+  'Goju-ryu': [
+    'Faixa Branca (7º Kyu)',
+    'Faixa Amarela (6º Kyu)',
+    'Faixa Vermelha (5º Kyu)',
+    'Faixa Laranja (4º Kyu)',
+    'Faixa Verde (3º Kyu)',
+    'Faixa Roxa (2º Kyu)',
+    'Faixa Marrom (1º Kyu)',
+    ...FAIXAS_PRETAS,
+  ],
+};
+
 export default function FiliacaoELoginPage() {
   // Aba ativa na seção de documentos: 'individual' | 'academia'
   const [abaDocumentos, setAbaDocumentos] = useState<'individual' | 'academia'>('individual');
@@ -55,11 +98,13 @@ export default function FiliacaoELoginPage() {
     telefone: '',
     dojo: '',
     sensei: '',
-    graduacao: 'Faixa Branca (7º Kyu)',
+    estilo: '' as EstiloKarate | '',
+    graduacao: '',
   });
 
   const [formAcademia, setFormAcademia] = useState({
     nomeAcademia: '',
+    estilo: '' as EstiloKarate | '',
     cnpjCpf: '',
     senseiResponsavel: '',
     graduacaoDan: '1º Dan (Sho-dan)',
@@ -113,6 +158,7 @@ export default function FiliacaoELoginPage() {
         { rotulo: 'E-mail', valor: formPraticante.email },
         { rotulo: 'Academia / Dojo filiado', valor: formPraticante.dojo },
         { rotulo: 'Sensei responsável', valor: formPraticante.sensei },
+        { rotulo: 'Estilo de Karatê', valor: formPraticante.estilo },
         { rotulo: 'Graduação atual', valor: formPraticante.graduacao },
       ],
       assinaturas: ['Assinatura do atleta (ou responsável legal)', 'Assinatura do Sensei responsável'],
@@ -125,6 +171,7 @@ export default function FiliacaoELoginPage() {
       subtitulo: 'Tipo de solicitação: Filiação de Academia (taxa R$ 195,00)',
       campos: [
         { rotulo: 'Nome da academia / dojo / clube', valor: formAcademia.nomeAcademia },
+        { rotulo: 'Estilo de Karatê', valor: formAcademia.estilo },
         { rotulo: 'CNPJ ou CPF do responsável', valor: formAcademia.cnpjCpf },
         { rotulo: 'Cidade / UF', valor: formAcademia.cidade },
         { rotulo: 'Sensei responsável técnico', valor: formAcademia.senseiResponsavel },
@@ -192,7 +239,7 @@ export default function FiliacaoELoginPage() {
                   Liga Vale Paraibana
                 </span>
                 <span className="text-[11px] sm:text-xs md:text-sm font-medium text-blue-200 tracking-wide">
-                  de Karatê Tradicional
+                  de Karatê Esportivo
                 </span>
               </div>
             </a>
@@ -1340,25 +1387,46 @@ export default function FiliacaoELoginPage() {
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                        Graduação Atual *
-                      </label>
-                      <select
-                        value={formPraticante.graduacao}
-                        onChange={(e) => setFormPraticante({ ...formPraticante, graduacao: e.target.value })}
-                        className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 focus:ring-2 focus:ring-[#ea580c] outline-none"
-                      >
-                        <option>Faixa Branca (7º Kyu)</option>
-                        <option>Faixa Amarela (6º Kyu)</option>
-                        <option>Faixa Vermelha (5º Kyu)</option>
-                        <option>Faixa Laranja (4º Kyu)</option>
-                        <option>Faixa Verde (3º Kyu)</option>
-                        <option>Faixa Roxa (2º Kyu)</option>
-                        <option>Faixa Marrom (1º Kyu)</option>
-                        <option>Faixa Preta 1º Dan</option>
-                        <option>Faixa Preta 2º Dan ou superior</option>
-                      </select>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                          Estilo de Karatê *
+                        </label>
+                        <select
+                          required
+                          value={formPraticante.estilo}
+                          onChange={(e) =>
+                            // Ao trocar o estilo, a graduação é zerada pois a ordem de faixas muda
+                            setFormPraticante({ ...formPraticante, estilo: e.target.value as EstiloKarate, graduacao: '' })
+                          }
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 focus:ring-2 focus:ring-[#ea580c] outline-none"
+                        >
+                          <option value="" disabled>Selecione o estilo</option>
+                          {ESTILOS_KARATE.map((estilo) => (
+                            <option key={estilo}>{estilo}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                          Graduação Atual *
+                        </label>
+                        <select
+                          required
+                          disabled={!formPraticante.estilo}
+                          value={formPraticante.graduacao}
+                          onChange={(e) => setFormPraticante({ ...formPraticante, graduacao: e.target.value })}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 focus:ring-2 focus:ring-[#ea580c] outline-none disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed"
+                        >
+                          <option value="" disabled>
+                            {formPraticante.estilo ? 'Selecione a faixa' : 'Escolha o estilo primeiro'}
+                          </option>
+                          {formPraticante.estilo &&
+                            GRADUACOES_POR_ESTILO[formPraticante.estilo].map((faixa) => (
+                              <option key={faixa}>{faixa}</option>
+                            ))}
+                        </select>
+                      </div>
                     </div>
 
                     {/* Documentos: enviados junto com o PDF */}
@@ -1387,6 +1455,23 @@ export default function FiliacaoELoginPage() {
                         placeholder="Ex: Associação de Karatê Ikigai"
                         className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 focus:ring-2 focus:ring-[#ea580c] outline-none"
                       />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                        Estilo de Karatê praticado *
+                      </label>
+                      <select
+                        required
+                        value={formAcademia.estilo}
+                        onChange={(e) => setFormAcademia({ ...formAcademia, estilo: e.target.value as EstiloKarate })}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 focus:ring-2 focus:ring-[#ea580c] outline-none"
+                      >
+                        <option value="" disabled>Selecione o estilo</option>
+                        {ESTILOS_KARATE.map((estilo) => (
+                          <option key={estilo}>{estilo}</option>
+                        ))}
+                      </select>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

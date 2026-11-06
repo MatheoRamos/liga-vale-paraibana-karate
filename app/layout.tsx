@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Liga Vale Paraibana de Karatê",
-  description: "Liga Vale Paraibana de Karatê Tradicional (LVPK) — filiação de dojos, graduações oficiais e karatê tradicional no Vale do Paraíba.",
+  description: "Liga Vale Paraibana de Karatê Esportivo (LVPK) — filiação de dojos, graduações oficiais e karatê esportivo no Vale do Paraíba.",
 };
 
 // O site só tem tema claro: impede que o "modo escuro automático" de navegadores

@@ -64,7 +64,7 @@ export async function gerarFichaPdf(ficha: Ficha) {
   doc.text('LIGA VALE PARAIBANA DE KARATÊ - LVPK', margem, 13);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9.5);
-  doc.text('Karatê Tradicional  |  Ficha de Cadastro para Filiação', margem, 21);
+  doc.text('Karatê Esportivo  |  Ficha de Cadastro para Filiação', margem, 21);
 
   // Título
   let y = 44;

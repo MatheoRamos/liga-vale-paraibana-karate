@@ -76,7 +76,7 @@ export default function App() {
                   Liga Vale Paraibana
                 </span>
                 <span className="text-[11px] sm:text-xs md:text-sm font-medium text-blue-200 tracking-wide">
-                  de Karatê Tradicional
+                  de Karatê Esportivo
                 </span>
               </div>
             </a>
@@ -179,7 +179,7 @@ export default function App() {
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500"></span>
               </span>
               <Sparkles size={16} className="text-orange-400" />
-              <span>Entidade Oficial de Karatê Tradicional • Vale do Paraíba</span>
+              <span>Entidade Oficial de Karatê Esportivo • Vale do Paraíba</span>
             </div>
 
             {/* Título com Destaque e Efeito */}
