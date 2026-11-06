@@ -22,10 +22,13 @@ import {
   Building,
   ShieldCheck,
   ArrowUp,
+  Download,
+  Send,
   Menu,
   Sparkles,
   ChevronRight
 } from 'lucide-react';
+import { gerarFichaPdf, formatarData, nomeArquivoFicha, CONTATO_LIGA } from './gerarFichaPdf';
 
 export default function FiliacaoELoginPage() {
   // Aba ativa na seção de documentos: 'individual' | 'academia'
@@ -38,7 +41,10 @@ export default function FiliacaoELoginPage() {
 
 
   // Estados dos formulários de cadastro
+  // cadastroEnviado = ficha já baixada em PDF (mostra a tela de próxima etapa)
   const [cadastroEnviado, setCadastroEnviado] = useState(false);
+  const [gerandoPdf, setGerandoPdf] = useState(false);
+  const [erroPdf, setErroPdf] = useState(false);
   const [formPraticante, setFormPraticante] = useState({
     tipo: 'filiacao', // 'filiacao' ou 'transferencia'
     nome: '',
@@ -92,14 +98,67 @@ export default function FiliacaoELoginPage() {
   };
 
 
-  const handleSubmitPraticante = (e: React.FormEvent) => {
-    e.preventDefault();
-    setCadastroEnviado(true);
+  const baixarFichaPraticante = () =>
+    gerarFichaPdf({
+      titulo: 'Ficha de Cadastro - Praticante / Atleta',
+      subtitulo: formPraticante.tipo === 'filiacao'
+        ? 'Tipo de solicitação: Nova Filiação (taxa R$ 30,00)'
+        : 'Tipo de solicitação: Transferência (taxa R$ 25,00)',
+      campos: [
+        { rotulo: 'Nome completo do atleta', valor: formPraticante.nome },
+        { rotulo: 'CPF', valor: formPraticante.cpf },
+        { rotulo: 'RG', valor: formPraticante.rg },
+        { rotulo: 'Data de nascimento', valor: formatarData(formPraticante.nascimento) },
+        { rotulo: 'WhatsApp / Telefone', valor: formPraticante.telefone },
+        { rotulo: 'E-mail', valor: formPraticante.email },
+        { rotulo: 'Academia / Dojo filiado', valor: formPraticante.dojo },
+        { rotulo: 'Sensei responsável', valor: formPraticante.sensei },
+        { rotulo: 'Graduação atual', valor: formPraticante.graduacao },
+      ],
+      assinaturas: ['Assinatura do atleta (ou responsável legal)', 'Assinatura do Sensei responsável'],
+      nomeArquivo: nomeArquivoFicha('ficha-lvpk-praticante', formPraticante.nome),
+    });
+
+  const baixarFichaAcademia = () =>
+    gerarFichaPdf({
+      titulo: 'Ficha de Cadastro - Academia / Dojo',
+      subtitulo: 'Tipo de solicitação: Filiação de Academia (taxa R$ 195,00)',
+      campos: [
+        { rotulo: 'Nome da academia / dojo / clube', valor: formAcademia.nomeAcademia },
+        { rotulo: 'CNPJ ou CPF do responsável', valor: formAcademia.cnpjCpf },
+        { rotulo: 'Cidade / UF', valor: formAcademia.cidade },
+        { rotulo: 'Sensei responsável técnico', valor: formAcademia.senseiResponsavel },
+        { rotulo: 'Graduação do Sensei', valor: formAcademia.graduacaoDan },
+        { rotulo: 'WhatsApp / Telefone de contato', valor: formAcademia.telefone },
+        { rotulo: 'E-mail oficial do dojo', valor: formAcademia.email },
+      ],
+      assinaturas: ['Assinatura do Sensei / Responsável Técnico'],
+      nomeArquivo: nomeArquivoFicha('ficha-lvpk-academia', formAcademia.nomeAcademia),
+    });
+
+  const baixarFicha = async () => {
+    setErroPdf(false);
+    setGerandoPdf(true);
+    try {
+      if (modalCadastroAberto === 'praticante') await baixarFichaPraticante();
+      else await baixarFichaAcademia();
+      setCadastroEnviado(true);
+    } catch {
+      setErroPdf(true);
+    } finally {
+      setGerandoPdf(false);
+    }
   };
 
-  const handleSubmitAcademia = (e: React.FormEvent) => {
+  const handleSubmitFicha = (e: React.FormEvent) => {
     e.preventDefault();
-    setCadastroEnviado(true);
+    baixarFicha();
+  };
+
+  const fecharModalCadastro = () => {
+    setModalCadastroAberto(null);
+    setCadastroEnviado(false);
+    setErroPdf(false);
   };
 
   return (
@@ -563,11 +622,13 @@ export default function FiliacaoELoginPage() {
                   Filiação Online (praticante/atleta)
                 </h3>
                 <p className="text-slate-600 leading-relaxed text-base">
-                  Para se filiar à <strong>LVPK – Liga Vale Paraibana de Karatê</strong>, basta preencher 
-                  o formulário de filiação disponível no site e anexar os documentos solicitados 
-                  diretamente no próprio formulário.
+                  Para se filiar à <strong>LVPK – Liga Vale Paraibana de Karatê</strong>, preencha a ficha de
+                  cadastro abaixo e baixe-a em PDF. Em seguida, envie o PDF junto com os documentos solicitados
+                  para o e-mail ou WhatsApp da Liga para finalizar o processo de filiação diretamente com a diretoria.
                 </p>
               </div>
+
+              <PassosFiliacao />
 
               {/* Caixa Importante (Estilo da foto da página 4) */}
               <div className="bg-sky-50 border-l-4 border-sky-500 p-5 rounded-r-xl shadow-xs">
@@ -590,10 +651,11 @@ export default function FiliacaoELoginPage() {
                   }}
                   className="bg-[#dc2626] hover:bg-[#b91c1c] text-white font-extrabold text-sm md:text-base uppercase tracking-wider px-7 py-3 rounded-md shadow-md transition-all active:scale-95"
                 >
-                  FICHA DE CADASTRO - PRATICANTE
+                  PREENCHER FICHA DE CADASTRO - PRATICANTE
                 </button>
                 <p className="text-slate-500 text-sm mt-3">
-                  Após o envio do cadastro e dos documentos, o pagamento da taxa deverá ser realizado conforme as instruções indicadas.
+                  A ficha serve para agilizar o seu atendimento. O pagamento da taxa e a conferência dos documentos
+                  são tratados diretamente com a diretoria após o envio.
                 </p>
               </div>
 
@@ -659,10 +721,14 @@ export default function FiliacaoELoginPage() {
                   Filiação de Academias, Dojos e Associações
                 </h3>
                 <p className="text-slate-600 leading-relaxed text-base">
-                  Para filiar seu dojo ou clube à <strong>LVPK – Liga Vale Paraibana de Karatê</strong>, 
-                  o responsável técnico deve preencher o formulário cadastral e anexar a documentação exigida.
+                  Para filiar seu dojo ou clube à <strong>LVPK – Liga Vale Paraibana de Karatê</strong>,
+                  o responsável técnico deve preencher a ficha cadastral abaixo e baixá-la em PDF. Em seguida,
+                  envie o PDF junto com a documentação exigida para o e-mail ou WhatsApp da Liga para finalizar
+                  o processo de filiação diretamente com a diretoria.
                 </p>
               </div>
+
+              <PassosFiliacao />
 
               {/* Caixa Importante Academia */}
               <div className="bg-sky-50 border-l-4 border-sky-500 p-5 rounded-r-xl shadow-xs">
@@ -684,10 +750,11 @@ export default function FiliacaoELoginPage() {
                   }}
                   className="bg-[#dc2626] hover:bg-[#b91c1c] text-white font-extrabold text-sm md:text-base uppercase tracking-wider px-7 py-3 rounded-md shadow-md transition-all active:scale-95"
                 >
-                  FICHA DE CADASTRO - ACADEMIA
+                  PREENCHER FICHA DE CADASTRO - ACADEMIA
                 </button>
                 <p className="text-slate-500 text-sm mt-3">
-                  Após o envio do cadastro, a secretaria entrará em contato para confirmação da documentação.
+                  A ficha serve para agilizar o seu atendimento. O pagamento da taxa e a conferência da documentação
+                  são tratados diretamente com a diretoria após o envio.
                 </p>
               </div>
 
@@ -1043,10 +1110,7 @@ export default function FiliacaoELoginPage() {
           <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-100 my-8">
             {/* Fechar Modal */}
             <button
-              onClick={() => {
-                setModalCadastroAberto(null);
-                setCadastroEnviado(false);
-              }}
+              onClick={fecharModalCadastro}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full p-1.5 transition-colors z-10"
               aria-label="Fechar"
             >
@@ -1064,38 +1128,67 @@ export default function FiliacaoELoginPage() {
                   : 'Ficha de Cadastro – Academia / Dojo'}
               </h3>
               <p className="text-xs text-blue-100 mt-1">
-                Preencha os dados abaixo para homologação pela diretoria da LVPK
+                Preencha os dados, baixe a ficha em PDF e envie para a LVPK para finalizar a filiação
               </p>
             </div>
 
-            {/* Conteúdo após envio com sucesso */}
+            {/* Tela após baixar a ficha: próxima etapa */}
             {cadastroEnviado ? (
-              <div className="p-8 text-center space-y-4">
+              <div className="p-6 md:p-8 text-center space-y-5 max-h-[75vh] overflow-y-auto">
                 <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
                   <CheckCircle2 size={36} />
                 </div>
                 <h4 className="text-2xl font-black text-slate-900">
-                  Solicitação Recebida com Sucesso!
+                  Ficha baixada em PDF!
                 </h4>
                 <p className="text-slate-600 text-sm max-w-md mx-auto leading-relaxed">
-                  Seus dados foram enviados para a diretoria técnica da Liga Vale Paraibana de Karatê.
-                  Para concluir a emissão de sua carteirinha e certificado, realize o pagamento da taxa correspondente via PIX.
+                  Agora, para <strong>finalizar sua filiação</strong>, envie o PDF da ficha junto com os documentos
+                  solicitados por um dos canais abaixo. A diretoria da LVPK dará continuidade ao processo
+                  diretamente com você, incluindo as orientações de pagamento.
                 </p>
 
-                <div className="bg-slate-50 p-5 rounded-xl border border-slate-200 max-w-md mx-auto text-left">
-                  <p className="text-xs font-bold uppercase text-slate-400 mb-1">Chave PIX Oficial</p>
-                  <p className="text-sm font-bold text-slate-800 italic">Em Breve...</p>
-                  <p className="text-xs text-slate-500 mt-2">
-                    Envie o comprovante de pagamento junto ao seu nome para <strong>ligavaleparaibanadekarate@gmail.com</strong> ou pelo WhatsApp <strong>(11) 98292 4664</strong>.
-                  </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto text-left">
+                  <a
+                    href={CONTATO_LIGA.whatsappLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 p-4 rounded-xl transition-colors"
+                  >
+                    <Phone className="text-emerald-600 shrink-0" size={22} />
+                    <span>
+                      <span className="block text-xs font-bold uppercase text-emerald-700">WhatsApp</span>
+                      <span className="block text-sm font-bold text-slate-800">{CONTATO_LIGA.telefone}</span>
+                    </span>
+                  </a>
+                  <a
+                    href={`mailto:${CONTATO_LIGA.email}?subject=${encodeURIComponent(
+                      modalCadastroAberto === 'praticante' ? 'Ficha de Cadastro - Praticante' : 'Ficha de Cadastro - Academia'
+                    )}`}
+                    className="flex items-center gap-3 bg-sky-50 hover:bg-sky-100 border border-sky-200 p-4 rounded-xl transition-colors"
+                  >
+                    <Mail className="text-sky-600 shrink-0" size={22} />
+                    <span className="min-w-0">
+                      <span className="block text-xs font-bold uppercase text-sky-700">E-mail</span>
+                      <span className="block text-xs font-bold text-slate-800 break-all">{CONTATO_LIGA.email}</span>
+                    </span>
+                  </a>
                 </div>
 
-                <div className="pt-4">
+                <p className="text-xs text-slate-500 max-w-md mx-auto">
+                  Lembre-se de anexar o arquivo PDF baixado na sua mensagem. Se o download não começou,
+                  verifique a pasta de Downloads ou baixe novamente.
+                </p>
+
+                <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
                   <button
-                    onClick={() => {
-                      setModalCadastroAberto(null);
-                      setCadastroEnviado(false);
-                    }}
+                    onClick={baixarFicha}
+                    disabled={gerandoPdf}
+                    className="inline-flex items-center justify-center gap-2 border border-slate-300 text-slate-700 hover:bg-slate-50 px-6 py-2.5 rounded-lg font-bold text-sm uppercase tracking-wider transition-colors disabled:opacity-60"
+                  >
+                    <Download size={16} /> {gerandoPdf ? 'Gerando...' : 'Baixar novamente'}
+                  </button>
+                  <button
+                    onClick={fecharModalCadastro}
                     className="bg-[#ea580c] hover:bg-[#c2410c] text-white px-8 py-2.5 rounded-lg font-bold text-sm uppercase tracking-wider transition-colors"
                   >
                     Concluir
@@ -1105,8 +1198,22 @@ export default function FiliacaoELoginPage() {
             ) : (
               /* Formulário interativo */
               <div className="p-6 md:p-8 max-h-[75vh] overflow-y-auto">
+                {/* Orientações */}
+                <div className="bg-sky-50 border-l-4 border-sky-500 p-4 rounded-r-xl mb-6 text-sm text-slate-700">
+                  <p className="font-bold text-sky-800 mb-2">Como funciona</p>
+                  <ol className="list-decimal list-inside space-y-1">
+                    <li>Preencha os dados abaixo;</li>
+                    <li>Clique em <strong>Baixar ficha em PDF</strong>;</li>
+                    <li>
+                      Envie o PDF com os documentos para <strong>{CONTATO_LIGA.email}</strong> ou
+                      pelo WhatsApp <strong>{CONTATO_LIGA.telefone}</strong>;
+                    </li>
+                    <li>A diretoria da LVPK entrará em contato para finalizar a filiação.</li>
+                  </ol>
+                </div>
+
                 {modalCadastroAberto === 'praticante' ? (
-                  <form onSubmit={handleSubmitPraticante} className="space-y-4">
+                  <form onSubmit={handleSubmitFicha} className="space-y-4">
                     
                     {/* Seletor Tipo: Filiação ou Transferência */}
                     <div className="grid grid-cols-2 gap-3 mb-4">
@@ -1269,28 +1376,20 @@ export default function FiliacaoELoginPage() {
                       </select>
                     </div>
 
-                    {/* Upload de documentos */}
+                    {/* Documentos: enviados junto com o PDF */}
                     <div className="p-4 bg-slate-50 border border-dashed border-slate-300 rounded-xl text-center">
-                      <UploadCloud className="mx-auto text-slate-400 mb-1" size={28} />
-                      <span className="text-xs font-bold text-slate-700 block">Anexar Documentos (Foto 3x4, RG e Certificado)</span>
-                      <span className="text-[11px] text-slate-500 block mb-2">Arquivos em JPG, PNG ou PDF até 10MB</span>
-                      <input 
-                        type="file" 
-                        multiple 
-                        className="text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#1e3a8a] file:text-white hover:file:bg-[#2e50ad] cursor-pointer"
-                      />
+                      <FileText className="mx-auto text-slate-400 mb-1" size={28} />
+                      <span className="text-xs font-bold text-slate-700 block">Documentos (Foto 3x4, RG e Certificado)</span>
+                      <span className="text-[11px] text-slate-500 block">
+                        Não é preciso anexar aqui: envie os documentos junto com o PDF da ficha pelo e-mail ou WhatsApp da Liga.
+                      </span>
                     </div>
 
-                    <button
-                      type="submit"
-                      className="w-full mt-4 py-3 bg-[#dc2626] hover:bg-[#b91c1c] text-white font-extrabold rounded-lg text-sm uppercase tracking-wider shadow-md transition-colors"
-                    >
-                      ENVIAR SOLICITAÇÃO DE FILIAÇÃO
-                    </button>
+                    <BotaoBaixarFicha gerando={gerandoPdf} erro={erroPdf} />
                   </form>
                 ) : (
                   /* Formulário de Academia */
-                  <form onSubmit={handleSubmitAcademia} className="space-y-4">
+                  <form onSubmit={handleSubmitFicha} className="space-y-4">
                     <div>
                       <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
                         Nome da Academia / Dojo / Clube *
@@ -1396,24 +1495,17 @@ export default function FiliacaoELoginPage() {
                       </div>
                     </div>
 
-                    {/* Anexo de documentos da academia */}
+                    {/* Documentação: enviada junto com o PDF */}
                     <div className="p-4 bg-slate-50 border border-dashed border-slate-300 rounded-xl text-center">
                       <Building className="mx-auto text-slate-400 mb-1" size={28} />
-                      <span className="text-xs font-bold text-slate-700 block">Anexar Documentação do Dojo</span>
-                      <span className="text-[11px] text-slate-500 block mb-2">Diploma Dan do Sensei, Comprovante de endereço e Alvará (se houver)</span>
-                      <input 
-                        type="file" 
-                        multiple 
-                        className="text-xs text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#1e3a8a] file:text-white hover:file:bg-[#2e50ad] cursor-pointer"
-                      />
+                      <span className="text-xs font-bold text-slate-700 block">Documentação do Dojo</span>
+                      <span className="text-[11px] text-slate-500 block">
+                        Diploma Dan do Sensei, comprovante de endereço e alvará (se houver): envie junto com o PDF da ficha
+                        pelo e-mail ou WhatsApp da Liga.
+                      </span>
                     </div>
 
-                    <button
-                      type="submit"
-                      className="w-full mt-4 py-3 bg-[#dc2626] hover:bg-[#b91c1c] text-white font-extrabold rounded-lg text-sm uppercase tracking-wider shadow-md transition-colors"
-                    >
-                      SOLICITAR FILIAÇÃO DA ACADEMIA (R$ 195,00)
-                    </button>
+                    <BotaoBaixarFicha gerando={gerandoPdf} erro={erroPdf} />
                   </form>
                 )}
               </div>
@@ -1434,6 +1526,48 @@ export default function FiliacaoELoginPage() {
         </button>
       )}
 
+    </div>
+  );
+}
+
+// Passo a passo do processo de filiação (exibido nas abas de praticante e academia)
+function PassosFiliacao() {
+  const passos = [
+    { icone: FileText, titulo: '1. Preencha a ficha', texto: 'Clique no botão abaixo e preencha a ficha de cadastro online.' },
+    { icone: Download, titulo: '2. Baixe em PDF', texto: 'Ao final, a ficha preenchida é baixada automaticamente em PDF.' },
+    { icone: Send, titulo: '3. Envie para a LVPK', texto: `Envie o PDF e os documentos para ${CONTATO_LIGA.email} ou pelo WhatsApp ${CONTATO_LIGA.telefone}.` },
+    { icone: CheckCircle2, titulo: '4. Finalize com a diretoria', texto: 'A diretoria entra em contato para conferir os documentos, orientar o pagamento e concluir a filiação.' },
+  ];
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {passos.map(({ icone: Icone, titulo, texto }) => (
+        <div key={titulo} className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
+          <Icone className="text-[#ea580c] mb-2" size={24} />
+          <p className="font-bold text-slate-900 text-sm mb-1">{titulo}</p>
+          <p className="text-slate-600 text-xs leading-relaxed break-words">{texto}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function BotaoBaixarFicha({ gerando, erro }: { gerando: boolean; erro: boolean }) {
+  return (
+    <div className="mt-4">
+      <button
+        type="submit"
+        disabled={gerando}
+        className="w-full py-3 bg-[#dc2626] hover:bg-[#b91c1c] text-white font-extrabold rounded-lg text-sm uppercase tracking-wider shadow-md transition-colors inline-flex items-center justify-center gap-2 disabled:opacity-60"
+      >
+        <Download size={18} />
+        {gerando ? 'GERANDO PDF...' : 'BAIXAR FICHA EM PDF'}
+      </button>
+      {erro && (
+        <p className="text-xs text-red-600 font-semibold mt-2 text-center">
+          Não foi possível gerar o PDF. Tente novamente ou entre em contato com a LVPK.
+        </p>
+      )}
     </div>
   );
 }
