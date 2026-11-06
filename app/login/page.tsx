@@ -36,8 +36,6 @@ export default function FiliacaoELoginPage() {
   // Estado dos modais
   const [modalCadastroAberto, setModalCadastroAberto] = useState<'praticante' | 'academia' | null>(null);
 
-  // Estados de cópia do PIX
-  const [copiadoPix, setCopiadoPix] = useState(false);
 
   // Estados dos formulários de cadastro
   const [cadastroEnviado, setCadastroEnviado] = useState(false);
@@ -93,13 +91,6 @@ export default function FiliacaoELoginPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const copiarChavePix = () => {
-    if (typeof navigator !== 'undefined') {
-      navigator.clipboard.writeText('lvpk.karate@gmail.com');
-      setCopiadoPix(true);
-      setTimeout(() => setCopiadoPix(false), 3000);
-    }
-  };
 
   const handleSubmitPraticante = (e: React.FormEvent) => {
     e.preventDefault();
@@ -643,34 +634,15 @@ export default function FiliacaoELoginPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-800">
                   <div className="bg-white p-4 rounded-xl border border-slate-200">
                     <span className="text-xs uppercase font-bold text-slate-400 block mb-1">Transferência Bancária</span>
-                    <p className="font-bold text-base text-[#1e3a8a]">Banco Itaú</p>
-                    <p className="text-sm"><strong>Agência:</strong> 0741</p>
-                    <p className="text-sm"><strong>Conta:</strong> 98985-9</p>
+                    <p className="font-bold text-base text-[#1e3a8a]">Dados bancários</p>
+                    <p className="text-sm text-slate-600 italic">Em Breve...</p>
                     <p className="text-sm text-slate-600"><strong>Titular:</strong> Liga Vale Paraibana de Karatê</p>
                   </div>
-                  
-                  <div className="bg-white p-4 rounded-xl border border-slate-200 flex flex-col justify-between">
-                    <div>
-                      <span className="text-xs uppercase font-bold text-slate-400 block mb-1">Pagamento Instantâneo</span>
-                      <p className="font-bold text-base text-[#1e3a8a]">PIX Oficial</p>
-                      <p className="text-sm font-mono text-slate-700 break-all select-all">lvpk.karate@gmail.com</p>
-                    </div>
-                    <button 
-                      onClick={copiarChavePix}
-                      className="mt-3 inline-flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider bg-sky-50 text-sky-700 hover:bg-sky-100 py-2 px-3 rounded-lg border border-sky-200 transition-colors"
-                    >
-                      {copiadoPix ? (
-                        <>
-                          <Check size={14} className="text-emerald-600" />
-                          <span>Chave PIX copiada!</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy size={14} />
-                          <span>Copiar chave PIX</span>
-                        </>
-                      )}
-                    </button>
+
+                  <div className="bg-white p-4 rounded-xl border border-slate-200">
+                    <span className="text-xs uppercase font-bold text-slate-400 block mb-1">Pagamento Instantâneo</span>
+                    <p className="font-bold text-base text-[#1e3a8a]">PIX Oficial</p>
+                    <p className="text-sm text-slate-600 italic">Em Breve...</p>
                   </div>
                 </div>
               </div>
@@ -745,34 +717,15 @@ export default function FiliacaoELoginPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-800">
                   <div className="bg-white p-4 rounded-xl border border-slate-200">
                     <span className="text-xs uppercase font-bold text-slate-400 block mb-1">Transferência Bancária</span>
-                    <p className="font-bold text-base text-[#1e3a8a]">Banco Itaú</p>
-                    <p className="text-sm"><strong>Agência:</strong> 0741</p>
-                    <p className="text-sm"><strong>Conta:</strong> 98985-9</p>
+                    <p className="font-bold text-base text-[#1e3a8a]">Dados bancários</p>
+                    <p className="text-sm text-slate-600 italic">Em Breve...</p>
                     <p className="text-sm text-slate-600"><strong>Titular:</strong> Liga Vale Paraibana de Karatê</p>
                   </div>
-                  
-                  <div className="bg-white p-4 rounded-xl border border-slate-200 flex flex-col justify-between">
-                    <div>
-                      <span className="text-xs uppercase font-bold text-slate-400 block mb-1">Pagamento Instantâneo</span>
-                      <p className="font-bold text-base text-[#1e3a8a]">PIX Oficial</p>
-                      <p className="text-sm font-mono text-slate-700 break-all select-all">lvpk.karate@gmail.com</p>
-                    </div>
-                    <button 
-                      onClick={copiarChavePix}
-                      className="mt-3 inline-flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider bg-sky-50 text-sky-700 hover:bg-sky-100 py-2 px-3 rounded-lg border border-sky-200 transition-colors"
-                    >
-                      {copiadoPix ? (
-                        <>
-                          <Check size={14} className="text-emerald-600" />
-                          <span>Chave PIX copiada!</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy size={14} />
-                          <span>Copiar chave PIX</span>
-                        </>
-                      )}
-                    </button>
+
+                  <div className="bg-white p-4 rounded-xl border border-slate-200">
+                    <span className="text-xs uppercase font-bold text-slate-400 block mb-1">Pagamento Instantâneo</span>
+                    <p className="font-bold text-base text-[#1e3a8a]">PIX Oficial</p>
+                    <p className="text-sm text-slate-600 italic">Em Breve...</p>
                   </div>
                 </div>
               </div>
@@ -1009,8 +962,8 @@ export default function FiliacaoELoginPage() {
               <li className="flex gap-3">
                 <span className="font-bold shrink-0">4.</span>
                 <div>
-                  Os pagamentos poderão ser feitos na sede da LVPK ou no <strong>Banco ITAÚ (agência 0741, conta 98985-9)</strong> | 
-                  <strong className="ml-1">PIX: lvpk.karate@gmail.com</strong>
+                  Os pagamentos poderão ser feitos na sede da LVPK ou por <strong>transferência bancária (agência e conta: Em Breve...)</strong> |
+                  <strong className="ml-1">PIX: Em Breve...</strong>
                 </div>
               </li>
             </ol>
@@ -1023,7 +976,7 @@ export default function FiliacaoELoginPage() {
       {/* 9. FOOTER (Rodapé conforme o padrão oficial e documento)  */}
       {/* ======================================================== */}
       <footer id="contato" className="bg-[#0f172a] text-slate-300 py-14 border-t-4 border-[#ea580c]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
           
           {/* Card Contato */}
           <div className="bg-[#1e293b] p-6 rounded-2xl border border-[#334155] md:col-span-1">
@@ -1073,18 +1026,6 @@ export default function FiliacaoELoginPage() {
               <li><a href="#" className="hover:text-white transition-colors">Política de Privacidade</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Termos de Uso</a></li>
             </ul>
-          </div>
-
-          {/* Canal de Ética e Conduta */}
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase text-xs tracking-wider">Canal de Ética e Conduta</h4>
-            <p className="text-xs text-slate-400 mb-3 leading-relaxed">
-              Canal sigiloso e independente para comunicação de sugestões, elogios ou condutas em desacordo com nosso regimento.
-            </p>
-            <div className="flex items-center gap-2 text-sm text-slate-300">
-              <Mail size={16} className="text-[#ea580c]" />
-              <span className="font-mono text-xs">etica@lvpk.com.br</span>
-            </div>
           </div>
 
         </div>
@@ -1143,9 +1084,9 @@ export default function FiliacaoELoginPage() {
 
                 <div className="bg-slate-50 p-5 rounded-xl border border-slate-200 max-w-md mx-auto text-left">
                   <p className="text-xs font-bold uppercase text-slate-400 mb-1">Chave PIX Oficial</p>
-                  <p className="font-mono text-sm font-bold text-slate-800">lvpk.karate@gmail.com</p>
+                  <p className="text-sm font-bold text-slate-800 italic">Em Breve...</p>
                   <p className="text-xs text-slate-500 mt-2">
-                    Envie o comprovante de pagamento junto ao seu nome para <strong>contato@lvpk.com.br</strong> ou pelo WhatsApp <strong>(11) 98292 4664</strong>.
+                    Envie o comprovante de pagamento junto ao seu nome para <strong>ligavaleparaibanadekarate@gmail.com</strong> ou pelo WhatsApp <strong>(11) 98292 4664</strong>.
                   </p>
                 </div>
 

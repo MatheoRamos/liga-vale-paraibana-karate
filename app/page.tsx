@@ -26,7 +26,6 @@ import {
 
 export default function App() {
   const [menuMobileAberto, setMenuMobileAberto] = useState(false);
-  const [faixaAtiva, setFaixaAtiva] = useState(0);
   const [mostrarVoltarTopo, setMostrarVoltarTopo] = useState(false);
 
   // Efeito para monitorar rolagem (para botão de voltar ao topo)
@@ -41,18 +40,6 @@ export default function App() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Trilha de Faixas
-  const faixasKarate = [
-    { nome: 'Branca', kyu: '7º Kyu', cor: 'bg-slate-100 border-slate-300 text-slate-800', sign: 'Pureza e início da jornada. A mente vazia pronta para absorver os fundamentos e valores do Karatê.' },
-    { nome: 'Amarela', kyu: '6º Kyu', cor: 'bg-amber-400 text-amber-950', sign: 'O despertar. Os primeiros raios de luz sobre o conhecimento técnico e a postura do praticante.' },
-    { nome: 'Vermelha', kyu: '5º Kyu', cor: 'bg-red-500 text-white', sign: 'A chama e a energia. Desenvolvimento da força, disciplina e determinação nos treinamentos diários.' },
-    { nome: 'Laranja', kyu: '4º Kyu', cor: 'bg-orange-500 text-white', sign: 'Estabilidade e postura. A consolidação das bases (dachi), do equilíbrio e do respeito no dojo.' },
-    { nome: 'Verde', kyu: '3º Kyu', cor: 'bg-emerald-600 text-white', sign: 'Crescimento e maturidade. O karateca floresce técnica e mentalmente, refinando kata e kumite.' },
-    { nome: 'Roxa', kyu: '2º Kyu', cor: 'bg-purple-700 text-white', sign: 'Profundidade e transição. Transição para o nível avançado da arte marcial com maior consciência corporal.' },
-    { nome: 'Marrom', kyu: '1º Kyu', cor: 'bg-[#5c3a21] text-white', sign: 'A terra e a solidez. Preparação final, respeito exemplar e refinamento técnico para a Faixa Preta.' },
-    { nome: 'Preta', kyu: '1º Dan em diante', cor: 'bg-black text-amber-400 border border-amber-500/50', sign: 'O recomeço. A união de técnica, espírito, liderança e maestria com compromisso vitalício à arte.' }
-  ];
 
   const voltarAoTopo = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -352,70 +339,7 @@ export default function App() {
       </section>
 
       {/* ======================================================== */}
-      {/* 4. INTERATIVO: TRILHA DAS FAIXAS & GRADUAÇÕES OFICIAIS   */}
-      {/* ======================================================== */}
-      <section className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white py-16 border-y-4 border-[#ea580c] relative overflow-hidden">
-        
-        {/* Glow de fundo */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[25rem] bg-orange-600/10 blur-[100px] pointer-events-none"></div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          
-          <div className="text-center max-w-3xl mx-auto mb-10">
-            <div className="inline-flex items-center gap-2 bg-orange-500/20 text-orange-400 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider border border-orange-500/30 mb-3">
-              <Award size={15} /> SISTEMA OFICIAL DE GRADUAÇÃO
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4">
-              A Trilha da Evolução no Karatê
-            </h2>
-            <p className="text-slate-300 text-sm sm:text-base font-light">
-              Na LVPK, cada faixa representa não apenas habilidade física, mas crescimento moral, 
-              humildade e dedicação. Clique nas faixas para entender os significados.
-            </p>
-          </div>
-
-          {/* Faixas em Grid / Botões Interativos */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">
-            {faixasKarate.map((faixa, index) => (
-              <button
-                key={faixa.nome}
-                onClick={() => setFaixaAtiva(index)}
-                className={`py-3 px-2 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-extrabold uppercase tracking-wider cursor-pointer shadow-md ${
-                  faixaAtiva === index 
-                    ? 'ring-4 ring-orange-500 scale-105 z-10' 
-                    : 'opacity-85 hover:opacity-100 hover:scale-102'
-                } ${faixa.cor}`}
-              >
-                <span>{faixa.nome}</span>
-                <span className="text-[10px] font-mono opacity-80">{faixa.kyu}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* Painel de Significado da Faixa Selecionada */}
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 sm:p-8 border border-white/20 max-w-3xl mx-auto text-center animate-fade-in shadow-2xl">
-            <span className="text-xs font-bold text-orange-400 uppercase tracking-widest block mb-1">
-              Significado Oficial • {faixasKarate[faixaAtiva].kyu}
-            </span>
-            <h3 className="text-2xl sm:text-3xl font-black text-white mb-3">
-              Faixa {faixasKarate[faixaAtiva].nome}
-            </h3>
-            <p className="text-slate-200 text-base sm:text-lg leading-relaxed font-light mb-6">
-              "{faixasKarate[faixaAtiva].sign}"
-            </p>
-            <a 
-              href="/karate" 
-              className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-orange-400 hover:text-white transition-colors"
-            >
-              Conhecer a Filosofia e História <ArrowRight size={14} />
-            </a>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* 5. DOJO KUN & VALORES DA TRADIÇÃO                        */}
+      {/* 4. DOJO KUN & VALORES DA TRADIÇÃO                        */}
       {/* ======================================================== */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -475,7 +399,7 @@ export default function App() {
       </section>
 
       {/* ======================================================== */}
-      {/* 6. MUNICÍPIOS ATENDIDOS NO VALE DO PARAÍBA                */}
+      {/* 5. MUNICÍPIOS ATENDIDOS NO VALE DO PARAÍBA                */}
       {/* ======================================================== */}
       <section className="py-12 bg-slate-100 border-t border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -512,10 +436,10 @@ export default function App() {
       </section>
 
       {/* ======================================================== */}
-      {/* 7. FOOTER OFICIAL (id="contato" Para Scroll Suave)        */}
+      {/* 6. FOOTER OFICIAL (id="contato" Para Scroll Suave)        */}
       {/* ======================================================== */}
       <footer id="contato" className="bg-[#0f172a] text-slate-300 py-16 border-t-4 border-[#ea580c] relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-10">
           
           {/* Card Contato */}
           <div className="bg-[#1e293b] p-6 rounded-2xl border border-[#334155] shadow-lg md:col-span-1">
@@ -586,23 +510,10 @@ export default function App() {
               <li><a href="/login#documentos" className="hover:text-white transition-colors">Documentos para Filiação</a></li>
               <li><a href="/institucional" className="hover:text-white transition-colors">Diretoria da Liga</a></li>
             </ul>
-          </div>
 
-          {/* Canal de Ética e Informações */}
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase text-xs tracking-wider flex items-center gap-2">
-              <Shield size={16} className="text-[#ea580c]" /> Canal de Ética & Conduta
-            </h4>
-            <p className="text-xs text-slate-400 mb-3 leading-relaxed">
-              Canal sigiloso e independente para comunicação de sugestões, condutas e conformidade técnica.
-            </p>
-            <div className="flex items-center gap-2 text-sm text-slate-300">
-              <Mail size={16} className="text-[#ea580c]" />
-              <span className="font-mono text-xs">etica@lvpk.com.br</span>
-            </div>
             <div className="mt-4 pt-3 border-t border-slate-800">
               <span className="text-[11px] text-slate-500 block">PIX Oficial da Liga:</span>
-              <span className="text-xs font-mono text-slate-300 font-bold select-all">lvpk.karate@gmail.com</span>
+              <span className="text-xs text-slate-300 font-bold italic">Em Breve...</span>
             </div>
           </div>
 
@@ -619,7 +530,7 @@ export default function App() {
       </footer>
 
       {/* ======================================================== */}
-      {/* 8. BOTÃO FLUTUANTE DE VOLTAR AO TOPO                     */}
+      {/* 7. BOTÃO FLUTUANTE DE VOLTAR AO TOPO                     */}
       {/* ======================================================== */}
       {mostrarVoltarTopo && (
         <button

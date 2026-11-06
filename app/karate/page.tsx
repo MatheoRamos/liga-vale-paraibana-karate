@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Users, 
   Award, 
@@ -22,7 +22,17 @@ import {
 export default function Karate() {
   const [menuMobileAberto, setMenuMobileAberto] = useState(false);
   const [mostrarVoltarTopo, setMostrarVoltarTopo] = useState(false);
-  const [estiloAtivo, setEstiloAtivo] = useState(0);
+  const [estiloAtivo, setEstiloAtivo] = useState<number | null>(null);
+  const [faixaAtiva, setFaixaAtiva] = useState(0);
+  const graduacaoRef = useRef<HTMLElement>(null);
+
+  const selecionarEstilo = (idx: number) => {
+    setEstiloAtivo(idx);
+    setFaixaAtiva(0);
+    setTimeout(() => {
+      graduacaoRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,6 +50,46 @@ export default function Karate() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  type Faixa = { nome: string; kyu: string; cor: string; sign: string };
+
+  const faixaBranca = (kyu: string): Faixa => ({ nome: 'Branca', kyu, cor: 'bg-slate-100 border border-slate-300 text-slate-800', sign: 'Pureza e início da jornada. A mente vazia pronta para absorver os fundamentos e valores do Karatê.' });
+  const faixaPreta: Faixa = { nome: 'Preta', kyu: '1º Dan em diante', cor: 'bg-black text-amber-400 border border-amber-500/50', sign: 'O recomeço. A união de técnica, espírito, liderança e maestria com compromisso vitalício à arte.' };
+
+  const faixasShotokan: Faixa[] = [
+    faixaBranca('10º Kyu'),
+    { nome: 'Amarela', kyu: '9º Kyu', cor: 'bg-amber-400 text-amber-950', sign: 'O despertar. Os primeiros raios de luz sobre o conhecimento técnico e a postura do praticante.' },
+    { nome: 'Laranja', kyu: '8º Kyu', cor: 'bg-orange-500 text-white', sign: 'A energia em formação. A consolidação das bases (dachi), do equilíbrio e do respeito no dojo.' },
+    { nome: 'Verde', kyu: '7º Kyu', cor: 'bg-emerald-600 text-white', sign: 'Crescimento. O karateca começa a florescer, ganhando confiança nos fundamentos e nos primeiros kata.' },
+    { nome: 'Azul Claro', kyu: '6º Kyu', cor: 'bg-sky-300 text-sky-950', sign: 'Serenidade e abertura. A mente se expande como o céu, buscando controle, calma e precisão técnica.' },
+    { nome: 'Roxa', kyu: '5º Kyu', cor: 'bg-purple-700 text-white', sign: 'Transição. O praticante deixa o nível básico e aprofunda a consciência corporal e a disciplina.' },
+    { nome: 'Azul Escuro', kyu: '4º Kyu', cor: 'bg-blue-900 text-white', sign: 'Profundidade. Firmeza técnica e maturidade mental, preparando o caminho para as graduações avançadas.' },
+    { nome: 'Marrom', kyu: '3º a 1º Kyu', cor: 'bg-[#5c3a21] text-white', sign: 'A terra e a solidez. Dividida em três etapas (3º, 2º e 1º Kyu), é a preparação final, com respeito exemplar e refinamento técnico para a Faixa Preta.' },
+    faixaPreta,
+  ];
+
+  const faixasShorin: Faixa[] = [
+    faixaBranca('7º Kyu'),
+    { nome: 'Azul Clara', kyu: '6º Kyu', cor: 'bg-sky-300 text-sky-950', sign: 'Serenidade e abertura. A mente se expande como o céu, buscando calma e atenção aos fundamentos.' },
+    { nome: 'Amarela', kyu: '5º Kyu', cor: 'bg-amber-400 text-amber-950', sign: 'O despertar. Os primeiros raios de luz sobre o conhecimento técnico e a postura do praticante.' },
+    { nome: 'Laranja', kyu: '4º Kyu', cor: 'bg-orange-500 text-white', sign: 'Estabilidade e postura. A consolidação das bases (dachi), do equilíbrio e do respeito no dojo.' },
+    { nome: 'Verde Estágio', kyu: '3º Kyu', cor: 'bg-emerald-400 text-emerald-950', sign: 'O broto. Etapa de transição dentro do 3º Kyu, em que o karateca amadurece a técnica antes da faixa verde plena.' },
+    { nome: 'Verde', kyu: '3º Kyu', cor: 'bg-emerald-600 text-white', sign: 'Crescimento e maturidade. O karateca floresce técnica e mentalmente, refinando kata e kumite.' },
+    { nome: 'Roxa', kyu: '2º Kyu', cor: 'bg-purple-700 text-white', sign: 'Profundidade e transição. Transição para o nível avançado da arte marcial com maior consciência corporal.' },
+    { nome: 'Marrom', kyu: '1º Kyu', cor: 'bg-[#5c3a21] text-white', sign: 'A terra e a solidez. Preparação final, respeito exemplar e refinamento técnico para a Faixa Preta.' },
+    faixaPreta,
+  ];
+
+  const faixasGoju: Faixa[] = [
+    faixaBranca('7º Kyu'),
+    { nome: 'Amarela', kyu: '6º Kyu', cor: 'bg-amber-400 text-amber-950', sign: 'O despertar. Os primeiros raios de luz sobre o conhecimento técnico e a postura do praticante.' },
+    { nome: 'Vermelha', kyu: '5º Kyu', cor: 'bg-red-500 text-white', sign: 'A chama e a energia. Desenvolvimento da força, disciplina e determinação nos treinamentos diários.' },
+    { nome: 'Laranja', kyu: '4º Kyu', cor: 'bg-orange-500 text-white', sign: 'Estabilidade e postura. A consolidação das bases (dachi), do equilíbrio e do respeito no dojo.' },
+    { nome: 'Verde', kyu: '3º Kyu', cor: 'bg-emerald-600 text-white', sign: 'Crescimento e maturidade. O karateca floresce técnica e mentalmente, refinando kata e kumite.' },
+    { nome: 'Roxa', kyu: '2º Kyu', cor: 'bg-purple-700 text-white', sign: 'Profundidade e transição. Transição para o nível avançado da arte marcial com maior consciência corporal.' },
+    { nome: 'Marrom', kyu: '1º Kyu', cor: 'bg-[#5c3a21] text-white', sign: 'A terra e a solidez. Preparação final, respeito exemplar e refinamento técnico para a Faixa Preta.' },
+    faixaPreta,
+  ];
+
   const estilos = [
     {
       id: 1,
@@ -50,7 +100,8 @@ export default function Karate() {
       caracteristicas: 'Bases longas, fortes e profundas (Zenkutsu-dachi), golpes lineares de alta potência, foco rigoroso na dinâmica de quadril (koshi) e transições explosivas.',
       destaque: 'O estilo mais praticado globalmente',
       corBadge: 'bg-orange-500 text-white',
-      imagem: 'https://images.unsplash.com/photo-1542652735873-fb2825bac6e2?auto=format&fit=crop&q=80'
+      imagem: 'https://images.unsplash.com/photo-1542652735873-fb2825bac6e2?auto=format&fit=crop&q=80',
+      faixas: faixasShotokan
     },
     {
       id: 2,
@@ -61,7 +112,8 @@ export default function Karate() {
       caracteristicas: 'Bases naturais, postura ereta, esquivas ágeis (tai-sabaki), contra-ataques velozes e ênfase na fluidez contínua do movimento.',
       destaque: 'Tradição milenar de Okinawa',
       corBadge: 'bg-blue-600 text-white',
-      imagem: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80'
+      imagem: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80',
+      faixas: faixasShorin
     },
     {
       id: 3,
@@ -72,20 +124,12 @@ export default function Karate() {
       caracteristicas: 'Equilíbrio harmônico entre o duro (Go) e o suave (Ju). Combina técnicas circulares de bloqueio, combate em curta distância e respiração profunda com contração (Ibuki).',
       destaque: 'Força e suavidade integradas',
       corBadge: 'bg-emerald-600 text-white',
-      imagem: 'https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&q=80'
-    },
-    {
-      id: 4,
-      sigla: 'WR',
-      nome: 'Wado-ryu',
-      fundador: 'Mestre Hironori Otsuka',
-      origem: 'Japão (Fusão com Shindo Yoshin Ryu Jujutsu)',
-      caracteristicas: 'Enfatiza a esquiva ao invés do bloqueio duro frontal, movimentação corporal econômica (taisabaki), projeções e torções aliadas a atemis de alta precisão.',
-      destaque: 'O caminho da harmonia marcial',
-      corBadge: 'bg-purple-600 text-white',
-      imagem: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&q=80'
+      imagem: 'https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&q=80',
+      faixas: faixasGoju
     }
   ];
+
+  const estiloSelecionado = estiloAtivo !== null ? estilos[estiloAtivo] : null;
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800 relative selection:bg-[#ea580c] selection:text-white">
@@ -248,11 +292,11 @@ export default function Karate() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {estilos.map((estilo, idx) => (
-              <div 
-                key={estilo.id} 
-                onClick={() => setEstiloAtivo(idx)}
+              <div
+                key={estilo.id}
+                onClick={() => selecionarEstilo(idx)}
                 className={`bg-white rounded-3xl p-6 border transition-all duration-300 flex flex-col justify-between cursor-pointer group shadow-md hover:shadow-2xl hover:-translate-y-2.5 ${
                   estiloAtivo === idx ? 'border-orange-500 ring-2 ring-orange-500/30' : 'border-slate-200'
                 }`}
@@ -281,7 +325,7 @@ export default function Karate() {
 
                 <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                   <span className="text-xs font-black uppercase tracking-wider text-[#1e3a8a] group-hover:text-[#ea580c] transition-colors">
-                    Dojos Filiados
+                    Ver Graduação de Faixas
                   </span>
                   <ChevronRight size={18} className="text-[#ea580c] group-hover:translate-x-1.5 transition-transform" />
                 </div>
@@ -291,6 +335,66 @@ export default function Karate() {
 
         </div>
       </section>
+
+      {/* ======================================================== */}
+      {/* 3.1 TRILHA DE FAIXAS DO ESTILO SELECIONADO               */}
+      {/* ======================================================== */}
+      {estiloSelecionado && (
+        <section
+          ref={graduacaoRef}
+          id="graduacao"
+          className="scroll-mt-24 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white py-16 border-y-4 border-[#ea580c] relative overflow-hidden"
+        >
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[25rem] bg-orange-600/10 blur-[100px] pointer-events-none"></div>
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="text-center max-w-3xl mx-auto mb-10">
+              <div className="inline-flex items-center gap-2 bg-orange-500/20 text-orange-400 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider border border-orange-500/30 mb-3">
+                <Award size={15} /> SISTEMA DE GRADUAÇÃO • {estiloSelecionado.nome.toUpperCase()}
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4">
+                A Trilha da Evolução no {estiloSelecionado.nome}
+              </h2>
+              <p className="text-slate-300 text-sm sm:text-base font-light">
+                Cada faixa representa não apenas habilidade física, mas crescimento moral,
+                humildade e dedicação. Clique nas faixas para entender os significados.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-3 mb-8">
+              {estiloSelecionado.faixas.map((faixa, index) => (
+                <button
+                  key={`${faixa.nome}-${faixa.kyu}`}
+                  onClick={() => setFaixaAtiva(index)}
+                  className={`w-[calc(50%-0.375rem)] sm:w-32 lg:w-[7.5rem] py-3 px-2 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-extrabold uppercase tracking-wider cursor-pointer shadow-md text-center ${
+                    faixaAtiva === index
+                      ? 'ring-4 ring-orange-500 scale-105 z-10'
+                      : 'opacity-85 hover:opacity-100 hover:scale-102'
+                  } ${faixa.cor}`}
+                >
+                  <span>{faixa.nome}</span>
+                  <span className="text-[10px] font-mono opacity-80">{faixa.kyu}</span>
+                </button>
+              ))}
+            </div>
+
+            <div
+              key={`${estiloAtivo}-${faixaAtiva}`}
+              className="bg-white/10 backdrop-blur-md rounded-2xl p-6 sm:p-8 border border-white/20 max-w-3xl mx-auto text-center animate-fade-in shadow-2xl"
+            >
+              <span className="text-xs font-bold text-orange-400 uppercase tracking-widest block mb-1">
+                Significado • {estiloSelecionado.faixas[faixaAtiva].kyu}
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-black text-white mb-3">
+                Faixa {estiloSelecionado.faixas[faixaAtiva].nome}
+              </h3>
+              <p className="text-slate-200 text-base sm:text-lg leading-relaxed font-light">
+                "{estiloSelecionado.faixas[faixaAtiva].sign}"
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ======================================================== */}
       {/* 4. OS TRÊS PILARES DO TREINAMENTO MARCIAL                 */}
@@ -380,7 +484,7 @@ export default function Karate() {
       {/* 6. FOOTER OFICIAL (id="contato")                         */}
       {/* ======================================================== */}
       <footer id="contato" className="bg-[#0f172a] text-slate-300 py-16 border-t-4 border-[#ea580c] relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-10">
           
           {/* Card Contato */}
           <div className="bg-[#1e293b] p-6 rounded-2xl border border-[#334155] shadow-lg md:col-span-1">
@@ -451,23 +555,10 @@ export default function Karate() {
               <li><a href="/login#documentos" className="hover:text-white transition-colors">Documentos para Filiação</a></li>
               <li><a href="/institucional" className="hover:text-white transition-colors">História da LVPK</a></li>
             </ul>
-          </div>
 
-          {/* Canal de Ética e Informações */}
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase text-xs tracking-wider flex items-center gap-2">
-              <Shield size={16} className="text-[#ea580c]" /> Canal de Ética & Conduta
-            </h4>
-            <p className="text-xs text-slate-400 mb-3 leading-relaxed">
-              Canal sigiloso e independente para comunicação de sugestões, condutas e conformidade técnica.
-            </p>
-            <div className="flex items-center gap-2 text-sm text-slate-300">
-              <Mail size={16} className="text-[#ea580c]" />
-              <span className="font-mono text-xs">etica@lvpk.com.br</span>
-            </div>
             <div className="mt-4 pt-3 border-t border-slate-800">
               <span className="text-[11px] text-slate-500 block">PIX Oficial da Liga:</span>
-              <span className="text-xs font-mono text-slate-300 font-bold select-all">lvpk.karate@gmail.com</span>
+              <span className="text-xs text-slate-300 font-bold italic">Em Breve...</span>
             </div>
           </div>
 

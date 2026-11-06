@@ -427,7 +427,7 @@ export default function Institucional() {
       {/* 7. FOOTER OFICIAL (id="contato")                         */}
       {/* ======================================================== */}
       <footer id="contato" className="bg-[#0f172a] text-slate-300 py-16 border-t-4 border-[#ea580c] relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-10">
           
           {/* Card Contato */}
           <div className="bg-[#1e293b] p-6 rounded-2xl border border-[#334155] shadow-lg md:col-span-1">
@@ -498,23 +498,10 @@ export default function Institucional() {
               <li><a href="/login#documentos" className="hover:text-white transition-colors">Documentos para Filiação</a></li>
               <li><a href="/karate" className="hover:text-white transition-colors">Estilos de Karatê</a></li>
             </ul>
-          </div>
 
-          {/* Canal de Ética e Informações */}
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase text-xs tracking-wider flex items-center gap-2">
-              <Shield size={16} className="text-[#ea580c]" /> Canal de Ética & Conduta
-            </h4>
-            <p className="text-xs text-slate-400 mb-3 leading-relaxed">
-              Canal sigiloso e independente para comunicação de sugestões, condutas e conformidade técnica.
-            </p>
-            <div className="flex items-center gap-2 text-sm text-slate-300">
-              <Mail size={16} className="text-[#ea580c]" />
-              <span className="font-mono text-xs">etica@lvpk.com.br</span>
-            </div>
             <div className="mt-4 pt-3 border-t border-slate-800">
               <span className="text-[11px] text-slate-500 block">PIX Oficial da Liga:</span>
-              <span className="text-xs font-mono text-slate-300 font-bold select-all">lvpk.karate@gmail.com</span>
+              <span className="text-xs text-slate-300 font-bold italic">Em Breve...</span>
             </div>
           </div>
 
