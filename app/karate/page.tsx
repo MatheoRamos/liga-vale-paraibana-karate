@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Users, 
   Award, 
@@ -22,16 +22,12 @@ import {
 export default function Karate() {
   const [menuMobileAberto, setMenuMobileAberto] = useState(false);
   const [mostrarVoltarTopo, setMostrarVoltarTopo] = useState(false);
-  const [estiloAtivo, setEstiloAtivo] = useState<number | null>(null);
+  const [estiloAtivo, setEstiloAtivo] = useState(0);
   const [faixaAtiva, setFaixaAtiva] = useState(0);
-  const graduacaoRef = useRef<HTMLElement>(null);
 
   const selecionarEstilo = (idx: number) => {
     setEstiloAtivo(idx);
     setFaixaAtiva(0);
-    setTimeout(() => {
-      graduacaoRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 50);
   };
 
   useEffect(() => {
@@ -129,7 +125,8 @@ export default function Karate() {
     }
   ];
 
-  const estiloSelecionado = estiloAtivo !== null ? estilos[estiloAtivo] : null;
+  const estiloSelecionado = estilos[estiloAtivo];
+  const faixaSelecionada = estiloSelecionado.faixas[faixaAtiva];
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800 relative selection:bg-[#ea580c] selection:text-white">
@@ -139,22 +136,34 @@ export default function Karate() {
       {/* ======================================================== */}
       <nav className="bg-[#1e3a8a]/95 backdrop-blur-md text-white sticky top-0 z-50 shadow-xl border-b-4 border-[#ea580c] transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-20 items-center">
+          <div className="flex justify-between gap-3 h-20 items-center">
             
-            {/* Logo e Nome */}
-            <a href="/" className="flex items-center gap-3 md:gap-4 group hover:opacity-95 transition-opacity">
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden p-0.5 border-2 border-white/80 group-hover:scale-105 transition-transform duration-300">
+            {/* Hambúrguer (mobile) + Logo e Nome */}
+            <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+              {/* Botão Mobile */}
+              <button
+                onClick={() => setMenuMobileAberto(!menuMobileAberto)}
+                className="lg:hidden -ml-2 p-2 shrink-0 text-white hover:text-orange-400 rounded-lg focus:outline-none transition-colors"
+                aria-label={menuMobileAberto ? 'Fechar menu' : 'Abrir menu'}
+                aria-expanded={menuMobileAberto}
+              >
+                {menuMobileAberto ? <X size={26} /> : <Menu size={26} />}
+              </button>
+
+            <a href="/" className="flex items-center gap-2 sm:gap-3 md:gap-4 min-w-0 group hover:opacity-95 transition-opacity">
+              <div className="w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 shrink-0 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden p-0.5 border-2 border-white/80 group-hover:scale-105 transition-transform duration-300">
                 <img src="/logo.png" alt="Logo LVPK" className="w-full h-full object-contain rounded-full" />
               </div>
-              <div className="flex flex-col">
-                <span className="font-black text-base md:text-lg leading-tight uppercase tracking-wider text-white drop-shadow-sm group-hover:text-orange-200 transition-colors">
+              <div className="hidden min-[360px]:flex flex-col min-w-0">
+                <span className="font-black text-[13px] min-[400px]:text-sm sm:text-base md:text-lg leading-tight uppercase tracking-wide sm:tracking-wider text-white drop-shadow-sm group-hover:text-orange-200 transition-colors">
                   Liga Vale Paraibana
                 </span>
-                <span className="text-xs md:text-sm font-medium text-blue-200 tracking-wide">
+                <span className="text-[11px] sm:text-xs md:text-sm font-medium text-blue-200 tracking-wide">
                   de Karatê Tradicional
                 </span>
               </div>
             </a>
+            </div>
 
             {/* Menu Central Desktop */}
             <div className="hidden lg:flex items-center space-x-7 text-xs md:text-sm font-bold tracking-wider">
@@ -176,24 +185,15 @@ export default function Karate() {
               </a>
             </div>
 
-            {/* Botão Filie-se Desktop & Botão Hamburguer Mobile */}
-            <div className="flex items-center gap-3">
+            {/* Botão Filie-se */}
+            <div className="flex items-center shrink-0">
               <a 
                 href="/login" 
-                className="btn-shine bg-gradient-to-r from-[#ea580c] to-[#c2410c] hover:from-[#c2410c] hover:to-[#9a3412] text-white px-5 md:px-6 py-2.5 rounded-full font-extrabold text-xs md:text-sm tracking-wider uppercase transition-all shadow-lg hover:shadow-orange-500/30 hover:scale-105 active:scale-95 text-center flex items-center gap-2"
+                className="btn-shine bg-[#ea580c] text-white px-4 sm:px-5 md:px-6 py-2.5 rounded-full font-extrabold text-xs md:text-sm tracking-wider uppercase whitespace-nowrap shrink-0 transition-all duration-200 shadow-md hover:-translate-y-1 active:translate-y-0 text-center flex items-center gap-2"
               >
                 <span>FILIE-SE</span>
-                <ChevronRight size={16} />
+                <ChevronRight size={16} className="hidden min-[400px]:block" />
               </a>
-
-              {/* Botão Mobile */}
-              <button
-                onClick={() => setMenuMobileAberto(!menuMobileAberto)}
-                className="lg:hidden p-2 text-white hover:text-orange-400 rounded-lg focus:outline-none transition-colors"
-                aria-label="Abrir menu"
-              >
-                {menuMobileAberto ? <X size={26} /> : <Menu size={26} />}
-              </button>
             </div>
           </div>
         </div>
@@ -292,109 +292,131 @@ export default function Karate() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {estilos.map((estilo, idx) => (
-              <div
-                key={estilo.id}
-                onClick={() => selecionarEstilo(idx)}
-                className={`bg-white rounded-3xl p-6 border transition-all duration-300 flex flex-col justify-between cursor-pointer group shadow-md hover:shadow-2xl hover:-translate-y-2.5 ${
-                  estiloAtivo === idx ? 'border-orange-500 ring-2 ring-orange-500/30' : 'border-slate-200'
-                }`}
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#1e3a8a] to-blue-900 text-white font-black text-xl flex items-center justify-center shadow-md group-hover:scale-110 group-hover:bg-[#ea580c] transition-all">
-                      {estilo.sigla}
-                    </span>
-                    <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow-xs ${estilo.corBadge}`}>
-                      {estilo.destaque}
-                    </span>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+
+            {/* Menu lateral de estilos */}
+            <aside className="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-28 self-start">
+              <span className="hidden lg:block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-3 px-1">
+                Selecione o estilo
+              </span>
+              <div role="tablist" aria-label="Estilos de Karatê" className="grid grid-cols-3 lg:grid-cols-1 gap-2 lg:gap-3">
+                {estilos.map((estilo, idx) => {
+                  const ativo = estiloAtivo === idx;
+                  return (
+                    <button
+                      key={estilo.id}
+                      role="tab"
+                      aria-selected={ativo}
+                      onClick={() => selecionarEstilo(idx)}
+                      className={`group flex flex-col lg:flex-row items-center gap-2 lg:gap-3 p-3 lg:p-4 rounded-2xl border text-center lg:text-left transition-all cursor-pointer ${
+                        ativo
+                          ? 'bg-[#1e3a8a] border-[#1e3a8a] text-white shadow-lg lg:translate-x-1'
+                          : 'bg-white border-slate-200 text-slate-800 hover:border-orange-400 hover:bg-orange-50/50'
+                      }`}
+                    >
+                      <span
+                        className={`w-11 h-11 lg:w-12 lg:h-12 shrink-0 rounded-xl font-black text-base lg:text-lg flex items-center justify-center transition-colors ${
+                          ativo ? 'bg-[#ea580c] text-white' : 'bg-gradient-to-br from-[#1e3a8a] to-blue-900 text-white'
+                        }`}
+                      >
+                        {estilo.sigla}
+                      </span>
+                      <span className="flex-1 min-w-0">
+                        <span className="block font-black text-sm lg:text-lg leading-tight">{estilo.nome}</span>
+                        <span className={`hidden lg:block text-xs mt-0.5 ${ativo ? 'text-blue-200' : 'text-slate-500'}`}>
+                          {estilo.destaque}
+                        </span>
+                      </span>
+                      <ChevronRight
+                        size={18}
+                        className={`hidden lg:block shrink-0 transition-transform ${
+                          ativo ? 'text-orange-400 translate-x-0.5' : 'text-slate-300 group-hover:text-orange-500'
+                        }`}
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+            </aside>
+
+            {/* Painel do estilo selecionado: descrição + faixas */}
+            <div
+              key={estiloSelecionado.id}
+              role="tabpanel"
+              className="lg:col-span-8 xl:col-span-9 rounded-3xl border border-slate-200 shadow-xl overflow-hidden animate-fade-in"
+            >
+              {/* Descrição do estilo */}
+              <div className="p-6 sm:p-8 bg-white">
+                <div className="flex flex-wrap items-center gap-3 mb-3">
+                  <h3 className="text-3xl font-black text-slate-900">{estiloSelecionado.nome}</h3>
+                  <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow-xs ${estiloSelecionado.corBadge}`}>
+                    {estiloSelecionado.destaque}
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm font-semibold text-slate-500 mb-4">
+                  {estiloSelecionado.fundador} • {estiloSelecionado.origem}
+                </p>
+                <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                  {estiloSelecionado.caracteristicas}
+                </p>
+              </div>
+
+              {/* Sistema de graduação */}
+              <div className="relative p-6 sm:p-8 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white border-t-4 border-[#ea580c] overflow-hidden">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[20rem] bg-orange-600/10 blur-[100px] pointer-events-none"></div>
+
+                <div className="relative z-10">
+                  <div className="mb-6">
+                    <div className="inline-flex items-center gap-2 bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider border border-orange-500/30 mb-3">
+                      <Award size={14} /> Sistema de Graduação
+                    </div>
+                    <h4 className="text-xl sm:text-2xl font-black tracking-tight mb-1">
+                      A Trilha da Evolução no {estiloSelecionado.nome}
+                    </h4>
+                    <p className="text-slate-300 text-sm font-light">
+                      Clique nas faixas para entender os significados.
+                    </p>
                   </div>
 
-                  <h3 className="text-2xl font-black text-slate-900 mb-1 group-hover:text-[#ea580c] transition-colors">
-                    {estilo.nome}
-                  </h3>
-                  <p className="text-xs font-semibold text-slate-500 mb-4">
-                    {estilo.fundador} • {estilo.origem}
-                  </p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-6">
+                    {estiloSelecionado.faixas.map((faixa, index) => (
+                      <button
+                        key={`${faixa.nome}-${faixa.kyu}`}
+                        onClick={() => setFaixaAtiva(index)}
+                        className={`py-3 px-2 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-extrabold uppercase tracking-wider cursor-pointer shadow-md text-center ${
+                          faixaAtiva === index
+                            ? 'ring-4 ring-orange-500 scale-105 z-10'
+                            : 'opacity-85 hover:opacity-100 hover:scale-102'
+                        } ${faixa.cor}`}
+                      >
+                        <span>{faixa.nome}</span>
+                        <span className="text-[10px] font-mono opacity-80">{faixa.kyu}</span>
+                      </button>
+                    ))}
+                  </div>
 
-                  <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-6">
-                    {estilo.caracteristicas}
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-xs font-black uppercase tracking-wider text-[#1e3a8a] group-hover:text-[#ea580c] transition-colors">
-                    Ver Graduação de Faixas
-                  </span>
-                  <ChevronRight size={18} className="text-[#ea580c] group-hover:translate-x-1.5 transition-transform" />
+                  <div
+                    key={faixaAtiva}
+                    className="bg-white/10 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-white/20 text-center animate-fade-in"
+                  >
+                    <span className="text-xs font-bold text-orange-400 uppercase tracking-widest block mb-1">
+                      Significado • {faixaSelecionada.kyu}
+                    </span>
+                    <h5 className="text-2xl font-black text-white mb-2">
+                      Faixa {faixaSelecionada.nome}
+                    </h5>
+                    <p className="text-slate-200 text-base leading-relaxed font-light">
+                      &ldquo;{faixaSelecionada.sign}&rdquo;
+                    </p>
+                  </div>
                 </div>
               </div>
-            ))}
+            </div>
+
           </div>
 
         </div>
       </section>
-
-      {/* ======================================================== */}
-      {/* 3.1 TRILHA DE FAIXAS DO ESTILO SELECIONADO               */}
-      {/* ======================================================== */}
-      {estiloSelecionado && (
-        <section
-          ref={graduacaoRef}
-          id="graduacao"
-          className="scroll-mt-24 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white py-16 border-y-4 border-[#ea580c] relative overflow-hidden"
-        >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[25rem] bg-orange-600/10 blur-[100px] pointer-events-none"></div>
-
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="text-center max-w-3xl mx-auto mb-10">
-              <div className="inline-flex items-center gap-2 bg-orange-500/20 text-orange-400 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider border border-orange-500/30 mb-3">
-                <Award size={15} /> SISTEMA DE GRADUAÇÃO • {estiloSelecionado.nome.toUpperCase()}
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4">
-                A Trilha da Evolução no {estiloSelecionado.nome}
-              </h2>
-              <p className="text-slate-300 text-sm sm:text-base font-light">
-                Cada faixa representa não apenas habilidade física, mas crescimento moral,
-                humildade e dedicação. Clique nas faixas para entender os significados.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-3 mb-8">
-              {estiloSelecionado.faixas.map((faixa, index) => (
-                <button
-                  key={`${faixa.nome}-${faixa.kyu}`}
-                  onClick={() => setFaixaAtiva(index)}
-                  className={`w-[calc(50%-0.375rem)] sm:w-32 lg:w-[7.5rem] py-3 px-2 rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all text-xs font-extrabold uppercase tracking-wider cursor-pointer shadow-md text-center ${
-                    faixaAtiva === index
-                      ? 'ring-4 ring-orange-500 scale-105 z-10'
-                      : 'opacity-85 hover:opacity-100 hover:scale-102'
-                  } ${faixa.cor}`}
-                >
-                  <span>{faixa.nome}</span>
-                  <span className="text-[10px] font-mono opacity-80">{faixa.kyu}</span>
-                </button>
-              ))}
-            </div>
-
-            <div
-              key={`${estiloAtivo}-${faixaAtiva}`}
-              className="bg-white/10 backdrop-blur-md rounded-2xl p-6 sm:p-8 border border-white/20 max-w-3xl mx-auto text-center animate-fade-in shadow-2xl"
-            >
-              <span className="text-xs font-bold text-orange-400 uppercase tracking-widest block mb-1">
-                Significado • {estiloSelecionado.faixas[faixaAtiva].kyu}
-              </span>
-              <h3 className="text-2xl sm:text-3xl font-black text-white mb-3">
-                Faixa {estiloSelecionado.faixas[faixaAtiva].nome}
-              </h3>
-              <p className="text-slate-200 text-base sm:text-lg leading-relaxed font-light">
-                "{estiloSelecionado.faixas[faixaAtiva].sign}"
-              </p>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ======================================================== */}
       {/* 4. OS TRÊS PILARES DO TREINAMENTO MARCIAL                 */}
@@ -471,7 +493,7 @@ export default function Karate() {
           <div className="pt-2">
             <a 
               href="/login" 
-              className="btn-shine inline-flex items-center gap-3 bg-[#ea580c] hover:bg-[#c2410c] text-white px-8 py-4 rounded-full font-black text-xs sm:text-sm uppercase tracking-wider transition-all shadow-xl hover:scale-105 active:scale-95"
+              className="btn-shine inline-flex items-center gap-3 bg-[#ea580c] text-white px-8 py-4 rounded-full font-black text-xs sm:text-sm uppercase tracking-wider transition-all duration-200 shadow-md hover:-translate-y-1 active:translate-y-0"
             >
               <span>INICIAR FILIAÇÃO DA SUA ACADEMIA</span>
               <ArrowRight size={18} />
@@ -580,7 +602,7 @@ export default function Karate() {
       {mostrarVoltarTopo && (
         <button
           onClick={voltarAoTopo}
-          className="fixed bottom-6 right-6 z-40 bg-[#ea580c] hover:bg-[#c2410c] text-white p-3 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all border-2 border-white/40 animate-fade-in"
+          className="fixed bottom-6 right-6 z-40 bg-[#ea580c] text-white p-3 rounded-full shadow-lg hover:-translate-y-1 active:translate-y-0 transition-all duration-200 border-2 border-white/40 animate-fade-in"
           title="Voltar ao topo"
           aria-label="Voltar ao topo"
         >

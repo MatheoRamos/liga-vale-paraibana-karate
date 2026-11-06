@@ -68,22 +68,34 @@ export default function Institucional() {
       {/* ======================================================== */}
       <nav className="bg-[#1e3a8a]/95 backdrop-blur-md text-white sticky top-0 z-50 shadow-xl border-b-4 border-[#ea580c] transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-20 items-center">
+          <div className="flex justify-between gap-3 h-20 items-center">
             
-            {/* Logo e Nome */}
-            <a href="/" className="flex items-center gap-3 md:gap-4 group hover:opacity-95 transition-opacity">
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden p-0.5 border-2 border-white/80 group-hover:scale-105 transition-transform duration-300">
+            {/* Hambúrguer (mobile) + Logo e Nome */}
+            <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+              {/* Botão Mobile */}
+              <button
+                onClick={() => setMenuMobileAberto(!menuMobileAberto)}
+                className="lg:hidden -ml-2 p-2 shrink-0 text-white hover:text-orange-400 rounded-lg focus:outline-none transition-colors"
+                aria-label={menuMobileAberto ? 'Fechar menu' : 'Abrir menu'}
+                aria-expanded={menuMobileAberto}
+              >
+                {menuMobileAberto ? <X size={26} /> : <Menu size={26} />}
+              </button>
+
+            <a href="/" className="flex items-center gap-2 sm:gap-3 md:gap-4 min-w-0 group hover:opacity-95 transition-opacity">
+              <div className="w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 shrink-0 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden p-0.5 border-2 border-white/80 group-hover:scale-105 transition-transform duration-300">
                 <img src="/logo.png" alt="Logo LVPK" className="w-full h-full object-contain rounded-full" />
               </div>
-              <div className="flex flex-col">
-                <span className="font-black text-base md:text-lg leading-tight uppercase tracking-wider text-white drop-shadow-sm group-hover:text-orange-200 transition-colors">
+              <div className="hidden min-[360px]:flex flex-col min-w-0">
+                <span className="font-black text-[13px] min-[400px]:text-sm sm:text-base md:text-lg leading-tight uppercase tracking-wide sm:tracking-wider text-white drop-shadow-sm group-hover:text-orange-200 transition-colors">
                   Liga Vale Paraibana
                 </span>
-                <span className="text-xs md:text-sm font-medium text-blue-200 tracking-wide">
+                <span className="text-[11px] sm:text-xs md:text-sm font-medium text-blue-200 tracking-wide">
                   de Karatê Tradicional
                 </span>
               </div>
             </a>
+            </div>
 
             {/* Menu Central Desktop */}
             <div className="hidden lg:flex items-center space-x-7 text-xs md:text-sm font-bold tracking-wider">
@@ -105,24 +117,15 @@ export default function Institucional() {
               </a>
             </div>
 
-            {/* Botão Filie-se Desktop & Botão Hamburguer Mobile */}
-            <div className="flex items-center gap-3">
+            {/* Botão Filie-se */}
+            <div className="flex items-center shrink-0">
               <a 
                 href="/login" 
-                className="btn-shine bg-gradient-to-r from-[#ea580c] to-[#c2410c] hover:from-[#c2410c] hover:to-[#9a3412] text-white px-5 md:px-6 py-2.5 rounded-full font-extrabold text-xs md:text-sm tracking-wider uppercase transition-all shadow-lg hover:shadow-orange-500/30 hover:scale-105 active:scale-95 text-center flex items-center gap-2"
+                className="btn-shine bg-[#ea580c] text-white px-4 sm:px-5 md:px-6 py-2.5 rounded-full font-extrabold text-xs md:text-sm tracking-wider uppercase whitespace-nowrap shrink-0 transition-all duration-200 shadow-md hover:-translate-y-1 active:translate-y-0 text-center flex items-center gap-2"
               >
                 <span>FILIE-SE</span>
-                <ChevronRight size={16} />
+                <ChevronRight size={16} className="hidden min-[400px]:block" />
               </a>
-
-              {/* Botão Mobile */}
-              <button
-                onClick={() => setMenuMobileAberto(!menuMobileAberto)}
-                className="lg:hidden p-2 text-white hover:text-orange-400 rounded-lg focus:outline-none transition-colors"
-                aria-label="Abrir menu"
-              >
-                {menuMobileAberto ? <X size={26} /> : <Menu size={26} />}
-              </button>
             </div>
           </div>
         </div>
@@ -252,7 +255,7 @@ export default function Institucional() {
               <div className="pt-2">
                 <a 
                   href="/login" 
-                  className="btn-shine inline-flex items-center gap-3 bg-[#ea580c] hover:bg-[#c2410c] text-white px-7 py-3.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all shadow-lg hover:scale-105"
+                  className="btn-shine inline-flex items-center gap-3 bg-[#ea580c] text-white px-7 py-3.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-md hover:-translate-y-1 active:translate-y-0"
                 >
                   <span>SEJA UM DOJO FILIADO</span>
                   <ArrowRight size={16} />
@@ -523,7 +526,7 @@ export default function Institucional() {
       {mostrarVoltarTopo && (
         <button
           onClick={voltarAoTopo}
-          className="fixed bottom-6 right-6 z-40 bg-[#ea580c] hover:bg-[#c2410c] text-white p-3 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all border-2 border-white/40 animate-fade-in"
+          className="fixed bottom-6 right-6 z-40 bg-[#ea580c] text-white p-3 rounded-full shadow-lg hover:-translate-y-1 active:translate-y-0 transition-all duration-200 border-2 border-white/40 animate-fade-in"
           title="Voltar ao topo"
           aria-label="Voltar ao topo"
         >
