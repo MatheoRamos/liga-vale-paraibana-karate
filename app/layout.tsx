@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -15,6 +15,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Liga Vale Paraibana de Karatê",
   description: "Liga Vale Paraibana de Karatê Tradicional (LVPK) — filiação de dojos, graduações oficiais e karatê tradicional no Vale do Paraíba.",
+};
+
+// O site só tem tema claro: impede que o "modo escuro automático" de navegadores
+// mobile (Samsung Internet, Chrome) recalcule as cores e deixe o laranja avermelhado.
+export const viewport: Viewport = {
+  colorScheme: "only light",
+  themeColor: "#1e3a8a",
 };
 
 export default function RootLayout({
