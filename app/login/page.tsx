@@ -156,12 +156,14 @@ export default function FiliacaoELoginPage() {
         { rotulo: 'Data de nascimento', valor: formatarData(formPraticante.nascimento) },
         { rotulo: 'WhatsApp / Telefone', valor: formPraticante.telefone },
         { rotulo: 'E-mail', valor: formPraticante.email },
-        { rotulo: 'Academia / Dojo filiado', valor: formPraticante.dojo },
+        { rotulo: 'Academia / Dojo', valor: formPraticante.dojo || 'Filiação individual (sem academia)' },
         { rotulo: 'Sensei responsável', valor: formPraticante.sensei },
         { rotulo: 'Estilo de Karatê', valor: formPraticante.estilo },
         { rotulo: 'Graduação atual', valor: formPraticante.graduacao },
       ],
-      assinaturas: ['Assinatura do atleta (ou responsável legal)', 'Assinatura do Sensei responsável'],
+      assinaturas: formPraticante.sensei.trim()
+        ? ['Assinatura do atleta (ou responsável legal)', 'Assinatura do Sensei responsável']
+        : ['Assinatura do atleta (ou responsável legal)'],
       nomeArquivo: nomeArquivoFicha('ficha-lvpk-praticante', formPraticante.nome),
     });
 
@@ -679,18 +681,6 @@ export default function FiliacaoELoginPage() {
               </div>
 
               <PassosFiliacao />
-
-              {/* Caixa Importante (Estilo da foto da página 4) */}
-              <div className="bg-sky-50 border-l-4 border-sky-500 p-5 rounded-r-xl shadow-xs">
-                <h4 className="text-sky-800 font-extrabold text-lg mb-2">Importante</h4>
-                <div className="bg-[#38bdf8]/20 px-2 py-1 rounded inline-block text-slate-900 font-semibold mb-2 text-sm md:text-base">
-                  Somente podem se filiar à LVPK praticantes que estejam vinculados a uma academia filiada à Liga. 
-                  Não são aceitas filiações individuais de atletas ou praticantes.
-                </div>
-                <p className="text-slate-600 text-sm mt-1">
-                  Em caso de dúvidas antes de realizar sua filiação, entre em contato com a LVPK.
-                </p>
-              </div>
 
               {/* Botão Ficha de Cadastro */}
               <div>
@@ -1361,11 +1351,10 @@ export default function FiliacaoELoginPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                          Academia / Dojo Filiado *
+                          Academia / Dojo <span className="normal-case font-medium text-slate-400">(se houver)</span>
                         </label>
                         <input
                           type="text"
-                          required
                           value={formPraticante.dojo}
                           onChange={(e) => setFormPraticante({ ...formPraticante, dojo: e.target.value })}
                           placeholder="Ex: Dojo Ikigai"
@@ -1374,11 +1363,10 @@ export default function FiliacaoELoginPage() {
                       </div>
                       <div>
                         <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                          Sensei Responsável *
+                          Sensei Responsável <span className="normal-case font-medium text-slate-400">(se houver)</span>
                         </label>
                         <input
                           type="text"
-                          required
                           value={formPraticante.sensei}
                           onChange={(e) => setFormPraticante({ ...formPraticante, sensei: e.target.value })}
                           placeholder="Ex: Nome do Sensei Responsável"
