@@ -99,6 +99,10 @@ export default function Institucional() {
 
             {/* Menu Central Desktop */}
             <div className="hidden lg:flex items-center space-x-7 text-xs md:text-sm font-bold tracking-wider">
+              <a href="/" className="text-blue-100 hover:text-orange-400 transition-colors py-2 relative group">
+                HOME
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-400 transition-all duration-300 group-hover:w-full"></span>
+              </a>
               <a href="/institucional" className="text-orange-400 py-2 relative group">
                 INSTITUCIONAL
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-400"></span>
@@ -133,6 +137,13 @@ export default function Institucional() {
         {/* Menu Mobile Dropdown */}
         {menuMobileAberto && (
           <div className="lg:hidden bg-[#172554] border-t border-blue-900/60 px-4 pt-3 pb-6 space-y-2 animate-fade-in shadow-2xl">
+            <a 
+              href="/" 
+              onClick={() => setMenuMobileAberto(false)}
+              className="block px-3 py-2.5 rounded-lg text-sm font-bold text-white hover:bg-white/10 hover:text-orange-400 transition-colors"
+            >
+              HOME
+            </a>
             <a 
               href="/institucional" 
               onClick={() => setMenuMobileAberto(false)}
